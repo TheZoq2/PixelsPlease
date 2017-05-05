@@ -3,8 +3,10 @@ import sfml;
 
 import time
 
+resolution = (1024, 768)
+
 def main():
-    window = sf.RenderWindow(sf.VideoMode(640, 480), "Pixels please")
+    window = sf.RenderWindow(sf.VideoMode(resolution[0], resolution[1]), "Pixels please")
     window.clear(sf.Color.BLUE)
 
     while True:
@@ -13,9 +15,5 @@ def main():
 
         for event in window.events:
             pass
-        window.close()
-        exit()
-            #if type(event) is sf.CloseEvent:
-                #window.close()
 
 main()
