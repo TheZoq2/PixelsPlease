@@ -11,3 +11,7 @@ def check_event(event, window):
         if event.pressed and event.code == sf.Keyboard.X:
             window.close()
             exit()
+
+    if type(event) is sf.CloseEvent:
+        window.close()
+        exit()
