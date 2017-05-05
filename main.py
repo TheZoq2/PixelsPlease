@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 from sfml import sf;
 import sfml;
 
@@ -13,9 +14,8 @@ def main():
 
         for event in window.events:
             pass
-        window.close()
-        exit()
-            #if type(event) is sf.CloseEvent:
-                #window.close()
+            if type(event) is sf.CloseEvent:
+                window.close()
+                exit()
 
 main()
