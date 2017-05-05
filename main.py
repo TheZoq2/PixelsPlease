@@ -17,9 +17,6 @@ def main():
 
         for event in window.events:
             pass
-            event_handler.check_event(event, window)
-            if type(event) is sf.CloseEvent:
-                window.close()
-                exit()
+            event_handler.check_event(window, event)
 
 main()
