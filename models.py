@@ -25,6 +25,24 @@ class ArticleTitle():
         self.size = size # tl, bg or sm
         self.text = text
 
+    def get_lined_text(self):
+        if self.size == "tl":
+            count = 3
+        elif self.size == "bg":
+            count = 5
+        else: # sm
+            count = 7
+
+        rt = ""
+
+        for i, word in enumerate(self.text.split(" ")):
+            rt += word+" "
+            if (i+1) % count == 0:
+                rt += "\n"
+
+        return rt
+
+
     def get_text_size(self):
         if self.size == "tl":
             return 20
@@ -35,7 +53,7 @@ class ArticleTitle():
 
     def get_text(self):
         font = sf.Font.from_file("media/fonts/Pixelated-Regular.ttf")
-        title = sf.Text(self.text)
+        title = sf.Text(self.get_lined_text())
         title.position = (self.x, self.y)
         title.font = font
         title.character_size = self.get_text_size()
