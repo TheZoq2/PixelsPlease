@@ -2,23 +2,7 @@ from sfml import sf
 
 resolution = (1024, 768)
 
-class Day():
-    def __init__(self, pages):
-        self.pages = pages
-
-    def get_score(self):
-        people = 0
-        gov = 0
-        for page in self.pages:
-            people += page.pScore
-            gov += page.gScore
-
-        people /= len(self.pages)
-        gov /= len(self.pages)
-
-        return people, gov
-
-class ArticleTitle():
+class Article():
     def __init__(self, x, y, size, text="", type=0):
         self.x = x
         self.y = y
@@ -62,6 +46,7 @@ class ArticleTitle():
         title.color = sf.Color.BLACK
         return title
 
+
 class Page():
     def __init__(self, articles):
         self.articles = articles
@@ -99,3 +84,19 @@ class Page():
                 base.blit(bg, (a.x, a.y))
 
         return base
+
+class Day():
+    def __init__(self, pages):
+        self.pages = pages
+
+    def get_score(self):
+        people = 0
+        gov = 0
+        for page in self.pages:
+            people += page.pScore
+            gov += page.gScore
+
+        people /= len(self.pages)
+        gov /= len(self.pages)
+
+        return people, gov

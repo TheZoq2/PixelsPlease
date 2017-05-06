@@ -2,7 +2,7 @@
 from sfml import sf
 import event_handler
 import image_handler
-from models import ArticleTitle, Page
+from models import Article, Page, Day
 import generator
 
 resolution = (1024, 768)
@@ -28,33 +28,38 @@ def main():
     shader = sf.Shader.from_file("media/shaders/censor.vert", "media/shaders/censor.frag")
 
     #paper = sf.Texture.from_file('media/images/pixels_please_paper_1.png')
-    state.page = get_page()
-    state.map  = state.page.get_map_texture()
-    state.paper = sf.Texture.from_image(state.page.get_image())
+    state.day = generate_day()
+    for i in range(len(state.day.pages)):
+        working_in_page = True
+        state.map  = state.day.pages[i].get_map_texture()
+        state.paper = sf.Texture.from_image(state.day.pages[i].get_image())
 
 
-    while True:
-        #time.sleep(0.001) # If you remove this your computer might freze
+        while working_in_page:
+            #time.sleep(0.001) # If you remove this your computer might freze
+
+            state.censor_texture.display()
+            window.draw(sf.Sprite(state.paper))
+            #window.draw(sf.Sprite(state.map.texture)) # debug
+            window.draw(state.censor_texture_sprite, sf.RenderStates(shader=shader))
+
+            for a in state.day.pages[i].articles:
+                window.draw(a.get_text())
+
+            window.display()
+
+            for event in window.events:
+                rt = event_handler.check_event(window, event, state.censor_texture)
+                if rt == "END":
+                    end_censor(state, i)
+                    working_in_page = False
+    # end of day
 
 
-        state.censor_texture.display()
-        window.draw(sf.Sprite(state.paper))
-        #window.draw(sf.Sprite(state.map.texture)) # debug
-        window.draw(state.censor_texture_sprite, sf.RenderStates(shader=shader))
-
-        for a in state.page.articles:
-            window.draw(a.get_text())
-
-        window.display()
-
-        for event in window.events:
-            rt = event_handler.check_event(window, event, state.censor_texture)
-            if rt == "END":
-                end_censor(state)
-
-
-def end_censor(state):
+def end_censor(state, i):
     per_people, per_goverment = image_handler.compare_images(state.map.texture.to_image(), state.censor_texture.texture.to_image())
+    state.day.pages[i].people_score = per_people
+    state.day.pages[i].goverment_score = per_goverment
     # save the score
     # next page
     print("PEOPLE SCORE: "+str(per_people)) # debug
@@ -62,14 +67,21 @@ def end_censor(state):
 
     #generate a new game state
 
+def generate_day():
+    pages = []
+    for i in range(3): # 3 articles?
+        pages.append(generate_page())
 
-def get_page():
+    return Day(pages)
+
+
+def generate_page():
     articles = []
 
-    articles.append(ArticleTitle(260, 140, "bg", generator.generate_headline()[0], generator.generate_headline()[1]))
-    articles.append(ArticleTitle(260, 330, "tl", generator.generate_headline()[0], generator.generate_headline()[1]))
-    articles.append(ArticleTitle(550, 330, "sm", generator.generate_headline()[0], generator.generate_headline()[1]))
-    articles.append(ArticleTitle(550, 450, "sm", generator.generate_headline()[0], generator.generate_headline()[1]))
+    articles.append(Article(260, 140, "bg", generator.generate_headline()[0], generator.generate_headline()[1]))
+    articles.append(Article(260, 330, "tl", generator.generate_headline()[0], generator.generate_headline()[1]))
+    articles.append(Article(550, 330, "sm", generator.generate_headline()[0], generator.generate_headline()[1]))
+    articles.append(Article(550, 450, "sm", generator.generate_headline()[0], generator.generate_headline()[1]))
 
     return Page(articles)
 
