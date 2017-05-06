@@ -13,9 +13,11 @@ def main():
 
     censor_texture = sf.RenderTexture(resolution[0], resolution[1])
     censor_texture.clear(sf.Color.TRANSPARENT)
+    censor_texture_sprite = sf.Sprite(censor_texture.texture)
 
     rekt = sf.RectangleShape();
     rekt.size = resolution
+    rekt.fill_color = sf.Color(255, 0, 0)
 
     shader = sf.Shader.from_file("media/shaders/censor.vert", "media/shaders/censor.frag")
 
@@ -24,9 +26,8 @@ def main():
 
 
         censor_texture.display()
-        censor_texture_sprite = sf.Sprite(censor_texture.texture)
         window.draw(rekt)
-        window.draw(censor_texture_sprite)
+        window.draw(censor_texture_sprite, sf.RenderStates(shader=shader))
 
         window.display()
 

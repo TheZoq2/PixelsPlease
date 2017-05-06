@@ -4,5 +4,7 @@ void main()
 {
     vec2 pos = gl_TexCoord[0].xy;
 
-    gl_FragColor = texture2D(texture, pos);
+    vec4 color = texture2D(texture, pos);
+    color.a = color.a * (1. - color.r);
+    gl_FragColor = color;
 }
