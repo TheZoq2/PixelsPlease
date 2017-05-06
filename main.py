@@ -15,7 +15,8 @@ def main():
         window.display()
 
         for event in window.events:
-            if type(event) is sf.CloseEvent:
+            #if type(event) is sf.CloseEvent:
+            if event.type == sf.Event.CLOSED:
                 window.close()
                 exit()
 
