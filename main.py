@@ -15,6 +15,25 @@ class GameState:
         self.page = None
         self.paper = None
 
+def title_screen(window, music):
+    title_texture = sf.Texture.from_file("media/images/Letter.png");
+    title_sprite = sf.Sprite(title_texture);
+
+    music.play()
+
+    while True:
+        window.draw(title_sprite);
+        window.display()
+
+        for event in window.events:
+            if type(event) is sf.KeyEvent:
+                if event.pressed and event.code == sf.Keyboard.X:
+                    window.close()
+                    exit()
+                if event.pressed and event.code == sf.Keyboard.RETURN:
+                    music.stop()
+                    return
+
 def main():
     window = sf.RenderWindow(sf.VideoMode(resolution[0], resolution[1]), "Pixels please", sf.Style.CLOSE)
     state = GameState()
@@ -33,6 +52,8 @@ def main():
 
     work_music.loop = True
     score_music.loop = True
+
+    title_screen(window, score_music)
 
     work_music.play()
 
