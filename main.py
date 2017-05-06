@@ -1,10 +1,7 @@
 #!/usr/bin/python3
 from sfml import sf
-import sfml
 import event_handler
 import image_handler
-
-import time
 
 resolution = (1024, 768)
 
