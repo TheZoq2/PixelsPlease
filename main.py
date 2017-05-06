@@ -22,8 +22,8 @@ def main():
 
     shader = sf.Shader.from_file("media/shaders/censor.vert", "media/shaders/censor.frag")
 
-    bg = image_handler.show_image('media/images/pixels_please_paper_1.png')
     paper = sf.Texture.from_file('media/images/pixels_please_paper_1.png')
+    map  = sf.Texture.from_file('media/images/pixels_please_paper_1_censor_map.png')
 
 
     while True:
@@ -38,6 +38,17 @@ def main():
         window.display()
 
         for event in window.events:
-            event_handler.check_event(window, event, censor_texture)
+            rt = event_handler.check_event(window, event, censor_texture)
+            if rt == "END":
+                end_censor(censor_texture.texture, map)
+
+
+def end_censor(censor, map):
+    per_people, per_goverment = image_handler.compare_images(map.to_image(), censor.to_image())
+    # save the score
+    # next page
+    print("PEOPLE SCORE: "+str(per_people)) # debug
+    print("GOV SCORE: "+str(per_goverment)) # debug
+
 
 main()

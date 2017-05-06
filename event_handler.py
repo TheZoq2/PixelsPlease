@@ -1,7 +1,6 @@
 from sfml import sf
 import draw
 
-
 def check_event(window, event, censor_texture):
     mouse_position = sf.Mouse.get_position(window)
 
@@ -31,6 +30,9 @@ def check_event(window, event, censor_texture):
         if event.pressed and event.code == sf.Keyboard.X:
             window.close()
             exit()
+        if event.pressed and event.code == sf.Keyboard.RETURN:
+            return "END"
+
 
     if type(event) is sf.CloseEvent:
         window.close()
