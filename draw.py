@@ -1,10 +1,10 @@
 from sfml import sf
 
 # length of a side in pixels
-square_length = 30
+censor_size = 30
 
-def draw_square(window, position):
-    rectangle = sf.RectangleShape((square_length, square_length))
+def censor(censor_texture, position):
+    rectangle = sf.RectangleShape((censor_size, censor_size))
     rectangle.fill_color = sf.Color.RED
-    rectangle.position = position - (square_length/2, square_length/2)
-    window.draw(rectangle)
+    rectangle.position = position - (censor_size/2, censor_size/2)
+    censor_texture.draw(rectangle)
