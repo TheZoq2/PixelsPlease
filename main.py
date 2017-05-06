@@ -18,7 +18,6 @@ def main():
         window.display()
 
         for event in window.events:
-            pass
             event_handler.check_event(window, event)
 
 main()
