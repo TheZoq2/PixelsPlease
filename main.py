@@ -2,6 +2,7 @@
 from sfml import sf
 import sfml
 import event_handler
+import image_handler
 
 import time
 
@@ -17,9 +18,13 @@ def main():
 
     rekt = sf.RectangleShape();
     rekt.size = resolution
-    rekt.fill_color = sf.Color(255, 0, 0)
+    rekt.fill_color = sf.Color(255, 255, 255)
 
     shader = sf.Shader.from_file("media/shaders/censor.vert", "media/shaders/censor.frag")
+
+    bg = image_handler.show_image('media/images/pixels_please_paper_1.png')
+    paper = sf.Texture.from_file('media/images/pixels_please_paper_1.png')
+
 
     while True:
         #time.sleep(0.001) # If you remove this your computer might freze
@@ -27,6 +32,7 @@ def main():
 
         censor_texture.display()
         window.draw(rekt)
+        window.draw(sf.Sprite(paper))
         window.draw(censor_texture_sprite, sf.RenderStates(shader=shader))
 
         window.display()
