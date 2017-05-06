@@ -17,6 +17,8 @@ def main():
     rekt = sf.RectangleShape();
     rekt.size = resolution
 
+    shader = sf.Shader.from_file("media/shaders/censor.vert", "media/shaders/censor.frag")
+
     while True:
         #time.sleep(0.001) # If you remove this your computer might freze
 
