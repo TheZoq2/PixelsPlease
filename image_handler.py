@@ -25,7 +25,7 @@ def compare_images(base, user):
                     people_score += CENSOR_REWARD
 
 
-    per_people = (people_score*100)/people_score_max
-    per_goverment = (gov_score*100)/gov_score_max
+    per_people = (people_score*100)/(people_score_max+1)
+    per_goverment = (gov_score*100)/(gov_score_max+1)
 
     return per_people, per_goverment
