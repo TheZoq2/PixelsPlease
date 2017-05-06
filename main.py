@@ -25,11 +25,19 @@ def main():
     shader = sf.Shader.from_file("media/shaders/censor.vert", "media/shaders/censor.frag")
     clock_font = sf.Font.from_file("media/fonts/Pixelated-Regular.ttf")
 
+    work_music = sf.Music.from_file("media/music/PixelsPleaseCalm.ogg")
+    score_music = sf.Music.from_file("media/music/PixelsPleaseTitle.ogg")
+
+    work_music.loop = True
+    score_music.loop = True
+
+    work_music.play()
+
     #paper = sf.Texture.from_file('media/images/pixels_please_paper_1.png')
     state.day = generate_day()
     for i in range(len(state.day.pages)):
         working_in_page = True
-        state.map  = state.day.pages[i].get_map_texture()
+        state.map = state.day.pages[i].get_map_texture()
         state.paper = sf.Texture.from_image(state.day.pages[i].get_image())
 
         state.censor_texture.clear(sf.Color.TRANSPARENT)
