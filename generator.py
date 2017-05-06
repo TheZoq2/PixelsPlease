@@ -45,15 +45,26 @@ def h_embarasing(world_state):
     scenario = pick_one([
                 "{} seen wearing dirty clothes",
                 "{} has been begging for food in the streets",
-                "{} seen wearing 'unmanly' clothes by annonymous witness"
+                "{} seen wearing 'unmanly' clothes",
+                "{} was caught smelling their own fart",
+                "{} was caught sneaking out of a gaybar",
             ])
 
     entity = get_random_entity(world_state)
     return (scenario.format(entity.name), C_BAD * entity.standing)
 
+def h_affair(world_state):
+    scenario = "{} has had an affair with {}"
+
+    entities = random.sample(world_state.entities, 2);
+
+    consequence = C_BAD if E_PRO_GOV in (entities[1].standing, entities[0].standing) else C_NEUTRAL
+    return (scenario.format(entities[0].name, entities[1].name), consequence)
+
 def h_election_good(world_state):
     scenario = pick_one([
             "{} got 99.999% of the votes in the election last week",
+            "{} got 129% of the votes in the election last week",
             "Latest polls show {} in the lead for the next election",
         ])
 
@@ -75,7 +86,8 @@ def h_killing(world_state):
 HEADLINE_TEMPLATES = [
         h_embarasing,
         h_election_good,
-        h_killing
+        h_killing,
+        h_affair
     ]
 
 class WorldState():
@@ -88,6 +100,22 @@ def generate_headline(world_state):
     return pick_one(HEADLINE_TEMPLATES)(world_state)
 
 
+def ev_opinion_change(world_state):
+    target = pick_one(world_state.entities)
+
+    new_standing = pick_one([E_NEUTRAL, E_PRO_GOV, E_ANTI_GOV])
+
+    if new_standing == target.standing:
+        return None
+
+    reasons = {
+            E_PRO_GOV: "{} should be protected from slander",
+            E_NEUTRAL: "You no longer have to care about slander against {}",
+            E_ANTI_GOV: "{} is considered a threat to the government"
+        }
+
+    target.standing = new_standing
+    return reasons[new_standing].format(target.name)
 
 def random_event(world_state):
     pass
@@ -99,3 +127,4 @@ if __name__ == "__main__":
         h(world_state)
 
     print(generate_headline(world_state))
+    print(ev_opinion_change(world_state))
