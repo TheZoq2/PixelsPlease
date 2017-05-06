@@ -60,7 +60,7 @@ def h_election_good():
 
 def h_killing():
     scenario = pick_one([
-            "{} found guilty of murdering {}"
+            "{} found guilty of murdering {}",
             "{} accused of murdering {}"
         ])
 
@@ -80,4 +80,8 @@ def generate_headline():
     return pick_one(HEADLINE_TEMPLATES)()
 
 if __name__ == "__main__":
+    # Run all the functions to make sure they work
+    for h in HEADLINE_TEMPLATES:
+        h()
+
     print(generate_headline())
