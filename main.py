@@ -38,6 +38,7 @@ def main():
 
     #paper = sf.Texture.from_file('media/images/pixels_please_paper_1.png')
     state.day = generate_day(world_state)
+
     for i in range(len(state.day.pages)):
         working_in_page = True
         state.map = state.day.pages[i].get_map_texture()
@@ -49,6 +50,8 @@ def main():
         time_limit = sf.seconds(30)
         current_time = sf.Clock()
 
+        time_limit = sf.seconds(30)
+        current_time = sf.Clock()
 
         while working_in_page:
             #time.sleep(0.001) # If you remove this your computer might freze

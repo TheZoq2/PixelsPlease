@@ -1,7 +1,8 @@
 from sfml import sf
 
 CENSOR_REWARD = 10
-CENSOR_PENALTY = 10
+CENSOR_PENALTY = 2
+
 
 def compare_images(base, user):
     gov_score_max = 0
@@ -27,5 +28,8 @@ def compare_images(base, user):
 
     per_people = (people_score*100)/(people_score_max+1)
     per_goverment = (gov_score*100)/(gov_score_max+1)
+
+    if per_people < 0:
+        per_people = 0
 
     return per_people, per_goverment

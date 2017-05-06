@@ -50,6 +50,8 @@ class Article():
 class Page():
     def __init__(self, articles):
         self.articles = articles
+        self.people_score = None
+        self.goverment_score = None
 
     def get_map_texture(self):
         base = sf.RenderTexture(resolution[0], resolution[1])
@@ -101,8 +103,8 @@ class Day():
         people = 0
         gov = 0
         for page in self.pages:
-            people += page.pScore
-            gov += page.gScore
+            people += page.people_score
+            gov += page.goverment_score
 
         people /= len(self.pages)
         gov /= len(self.pages)
