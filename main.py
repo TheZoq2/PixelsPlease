@@ -55,7 +55,7 @@ def main():
 
             state.censor_texture.display()
             window.draw(sf.Sprite(state.paper))
-            #window.draw(sf.Sprite(state.map.texture)) # debug
+            window.draw(sf.Sprite(state.map.texture)) # debug
             window.draw(state.censor_texture_sprite, sf.RenderStates(shader=shader))
 
             clock_text = sf.Text("Time left: " + str(int(time_limit.seconds - current_time.elapsed_time.seconds)))
@@ -90,7 +90,7 @@ def end_censor(state, i):
     state.day.pages[i].goverment_score = per_goverment
 
     per_people, per_goverment = image_handler.compare_images(
-            state.map.to_image(),
+            state.map.texture.to_image(),
             state.censor_texture.texture.to_image()
         )
     # save the score
@@ -111,10 +111,10 @@ def generate_day(world_state):
 def generate_page(world_state):
     articles = []
 
-    articles.append(Article(260, 140, "bg", generator.generate_headline(world_state)[0]))
-    articles.append(Article(260, 330, "tl", generator.generate_headline(world_state)[0]))
-    articles.append(Article(550, 330, "sm", generator.generate_headline(world_state)[0]))
-    articles.append(Article(550, 450, "sm", generator.generate_headline(world_state)[0]))
+    articles.append(Article(260, 140, "bg", generator.generate_headline(world_state)))
+    articles.append(Article(260, 330, "tl", generator.generate_headline(world_state)))
+    articles.append(Article(550, 330, "sm", generator.generate_headline(world_state)))
+    articles.append(Article(550, 450, "sm", generator.generate_headline(world_state)))
 
     return Page(articles)
 

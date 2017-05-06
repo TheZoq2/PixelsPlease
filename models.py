@@ -55,16 +55,24 @@ class Page():
         base = sf.RenderTexture(resolution[0], resolution[1])
         base.clear(sf.Color.TRANSPARENT)
         for a in self.articles:
-            bounds = a.get_text().global_bounds
-            rect = sf.RectangleShape((bounds.size[0]-5, bounds.size[1]-5))
-            rect.position = bounds.position[0], (bounds.position[1] - (bounds.position[1] - resolution[1]/2)*2)-bounds.size[1]+5 # it works, don't ask how
+            #bounds = a.get_text().global_bounds
+            #rect = sf.RectangleShape((bounds.size[0]-5, bounds.size[1]-5))
+            #rect.position = bounds.position[0], (bounds.position[1] - (bounds.position[1] - resolution[1]/2)*2)-bounds.size[1]+5 # it works, don't ask how
+            #if a.type == -1:
+            #    rect.fill_color = sf.Color.BLACK
+            #else: #0
+            #    rect.fill_color = sf.Color.RED
+
+            #base.draw(rect)
+            text_object = a.get_text()
             if a.type == -1:
-                rect.fill_color = sf.Color.BLACK
+                text_object.color = sf.Color.BLACK
             else: #0
-                rect.fill_color = sf.Color.RED
+                text_object.color = sf.Color.RED
 
-            base.draw(rect)
+            base.draw(text_object)
 
+        base.display()
         return base
 
 
