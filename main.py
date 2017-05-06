@@ -11,7 +11,7 @@ import time
 resolution = (1024, 768)
 
 def main():
-    window = sf.RenderWindow(sf.VideoMode(resolution[0], resolution[1]), "Pixels please")
+    window = sf.RenderWindow(sf.VideoMode(resolution[0], resolution[1]), "Pixels please", sf.Style.CLOSE)
     #window.clear(sf.Color.BLUE)
 
     censor_texture = sf.RenderTexture(resolution[0], resolution[1])
