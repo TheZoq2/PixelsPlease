@@ -35,7 +35,7 @@ def title_screen(window, music):
                     return
 
 def main():
-    window = sf.RenderWindow(sf.VideoMode(resolution[0], resolution[1]), "Pixels please", sf.Style.CLOSE)
+    window = sf.RenderWindow(sf.VideoMode(resolution[0], resolution[1]), "Pixels please")
     state = GameState()
 
     world_state = generator.WorldState()
