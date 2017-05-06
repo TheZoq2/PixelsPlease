@@ -18,7 +18,10 @@ class GameState:
 def main():
     state = GameState()
 
-    window = sf.RenderWindow(sf.VideoMode(resolution[0], resolution[1]), "Pixels please")
+    window = sf.RenderWindow(sf.VideoMode(resolution[0], resolution[1]), "Pixels please", sf.Style.NONE)
+
+    world_state = generator.WorldState()
+
     #window.clear(sf.Color.BLUE)
 
     state.censor_texture = sf.RenderTexture(resolution[0], resolution[1])
@@ -29,7 +32,7 @@ def main():
 
     #paper = sf.Texture.from_file('media/images/pixels_please_paper_1.png')
     state.map  = sf.Texture.from_file('media/images/pixels_please_paper_1_censor_map.png')
-    state.page = get_page()
+    state.page = get_page(world_state)
     state.paper = sf.Texture.from_image(state.page.get_image())
 
 
@@ -53,22 +56,25 @@ def main():
 
 
 def end_censor(state):
-    per_people, per_goverment = image_handler.compare_images(state.map.to_image(), state.censor.to_image())
+    per_people, per_goverment = image_handler.compare_images(
+            state.map.to_image(),
+            state.censor_texture.texture.to_image()
+        )
     # save the score
     # next page
     print("PEOPLE SCORE: "+str(per_people)) # debug
     print("GOV SCORE: "+str(per_goverment)) # debug
 
-    #generate a new game state
+    
 
 
-def get_page():
+def get_page(world_state):
     articles = []
 
-    articles.append(ArticleTitle(260, 140, "bg", generator.generate_headline()[0]))
-    articles.append(ArticleTitle(260, 330, "tl", generator.generate_headline()[0]))
-    articles.append(ArticleTitle(550, 330, "sm", generator.generate_headline()[0]))
-    articles.append(ArticleTitle(550, 450, "sm", generator.generate_headline()[0]))
+    articles.append(ArticleTitle(260, 140, "bg", generator.generate_headline(world_state)[0]))
+    articles.append(ArticleTitle(260, 330, "tl", generator.generate_headline(world_state)[0]))
+    articles.append(ArticleTitle(550, 330, "sm", generator.generate_headline(world_state)[0]))
+    articles.append(ArticleTitle(550, 450, "sm", generator.generate_headline(world_state)[0]))
 
     return Page(articles)
 
