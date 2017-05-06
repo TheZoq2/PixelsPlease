@@ -27,8 +27,8 @@ def main():
     shader = sf.Shader.from_file("media/shaders/censor.vert", "media/shaders/censor.frag")
 
     #paper = sf.Texture.from_file('media/images/pixels_please_paper_1.png')
-    state.map  = sf.Texture.from_file('media/images/pixels_please_paper_1_censor_map.png')
     state.page = get_page()
+    state.map  = state.page.get_map_texture()
     state.paper = sf.Texture.from_image(state.page.get_image())
 
     time_limit = sf.seconds(30)
@@ -40,6 +40,7 @@ def main():
         #time.sleep(0.001) # If you remove this your computer might freze
         state.censor_texture.display()
         window.draw(sf.Sprite(state.paper))
+        #window.draw(sf.Sprite(state.map.texture)) # debug
         window.draw(state.censor_texture_sprite, sf.RenderStates(shader=shader))
 
         clock_text = sf.Text("Time left: " + str(int(time_limit.seconds - current_time.elapsed_time.seconds)))
@@ -67,7 +68,7 @@ def main():
 
 
 def end_censor(state):
-    per_people, per_goverment = image_handler.compare_images(state.map.to_image(), state.censor.to_image())
+    per_people, per_goverment = image_handler.compare_images(state.map.texture.to_image(), state.censor_texture.texture.to_image())
     # save the score
     # next page
     print("PEOPLE SCORE: "+str(per_people)) # debug
@@ -79,10 +80,10 @@ def end_censor(state):
 def get_page():
     articles = []
 
-    articles.append(ArticleTitle(260, 140, "bg", generator.generate_headline()[0]))
-    articles.append(ArticleTitle(260, 330, "tl", generator.generate_headline()[0]))
-    articles.append(ArticleTitle(550, 330, "sm", generator.generate_headline()[0]))
-    articles.append(ArticleTitle(550, 450, "sm", generator.generate_headline()[0]))
+    articles.append(ArticleTitle(260, 140, "bg", generator.generate_headline()[0], generator.generate_headline()[1]))
+    articles.append(ArticleTitle(260, 330, "tl", generator.generate_headline()[0], generator.generate_headline()[1]))
+    articles.append(ArticleTitle(550, 330, "sm", generator.generate_headline()[0], generator.generate_headline()[1]))
+    articles.append(ArticleTitle(550, 450, "sm", generator.generate_headline()[0], generator.generate_headline()[1]))
 
     return Page(articles)
 

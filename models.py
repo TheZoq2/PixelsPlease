@@ -19,11 +19,30 @@ class Day():
         return people, gov
 
 class ArticleTitle():
-    def __init__(self, x, y, size, text=""):
+    def __init__(self, x, y, size, text="", type=0):
         self.x = x
         self.y = y
         self.size = size # tl, bg or sm
         self.text = text
+        self.type = type
+
+    def get_lined_text(self):
+        if self.size == "tl":
+            count = 3
+        elif self.size == "bg":
+            count = 5
+        else: # sm
+            count = 7
+
+        rt = ""
+
+        for i, word in enumerate(self.text.split(" ")):
+            rt += word+" "
+            if (i+1) % count == 0:
+                rt += "\n"
+
+        return rt
+
 
     def get_text_size(self):
         if self.size == "tl":
@@ -35,7 +54,7 @@ class ArticleTitle():
 
     def get_text(self):
         font = sf.Font.from_file("media/fonts/Pixelated-Regular.ttf")
-        title = sf.Text(self.text)
+        title = sf.Text(self.get_lined_text())
         title.position = (self.x, self.y)
         title.font = font
         title.character_size = self.get_text_size()
@@ -54,7 +73,11 @@ class Page():
             bounds = a.get_text().global_bounds
             rect = sf.RectangleShape((bounds.size[0]-5, bounds.size[1]-5))
             rect.position = bounds.position[0], (bounds.position[1] - (bounds.position[1] - resolution[1]/2)*2)-bounds.size[1]+5 # it works, don't ask how
-            rect.fill_color = sf.Color.BLACK
+            if a.type == -1:
+                rect.fill_color = sf.Color.BLACK
+            else: #0
+                rect.fill_color = sf.Color.RED
+
             base.draw(rect)
 
         return base
