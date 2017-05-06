@@ -2,26 +2,30 @@ from sfml import sf
 import draw
 
 
-
 def check_event(window, event, censor_texture):
     mouse_position = sf.Mouse.get_position(window)
 
     if type(event) is sf.MouseMoveEvent:
-        mouse_position = sf.Mouse.get_position(window)
+        if sf.Mouse.is_button_pressed(sf.Mouse.LEFT):
+            mouse_position = sf.Mouse.get_position(window)
+            draw.censor(censor_texture, mouse_position)
+
+        elif sf.Mouse.is_button_pressed(sf.Mouse.RIGHT):
+            mouse_position = sf.Mouse.get_position(window)
+            draw.uncensor(censor_texture, mouse_position)
 
     if type(event) is sf.MouseButtonEvent:
         if event.pressed and event.button == sf.Mouse.LEFT:
-            #print("LEFT press", mouse_position)
             draw.censor(censor_texture, mouse_position)
 
         if event.pressed and event.button == sf.Mouse.RIGHT:
-            print("RIGHT press", mouse_position)
+            draw.uncensor(censor_texture, mouse_position)
 
         if event.released and event.button == sf.Mouse.LEFT:
-            print("LEFT released", mouse_position)
+            pass
 
         if event.released and event.button == sf.Mouse.RIGHT:
-            print("RIGHT released", mouse_position)
+            pass
 
     if type(event) is sf.KeyEvent:
         if event.pressed and event.code == sf.Keyboard.X:
