@@ -31,14 +31,29 @@ def main():
     state.page = get_page()
     state.paper = sf.Texture.from_image(state.page.get_image())
 
+    time_limit = sf.seconds(30)
+    current_time = sf.Clock()
+
+    clock_font = sf.Font.from_file("media/fonts/Pixelated-Regular.ttf")
 
     while True:
         #time.sleep(0.001) # If you remove this your computer might freze
-
-
         state.censor_texture.display()
         window.draw(sf.Sprite(state.paper))
         window.draw(state.censor_texture_sprite, sf.RenderStates(shader=shader))
+
+        clock_text = sf.Text("Time left: " + str(int(time_limit.seconds - current_time.elapsed_time.seconds)))
+        clock_text.position = (10, 10)
+        clock_text.font = clock_font
+        clock_text.character_size = 12
+        clock_text.style = sf.Text.REGULAR
+        clock_text.color = sf.Color.BLUE
+
+        window.draw(clock_text)
+
+        if current_time.elapsed_time >= time_limit:
+            #TODO: Do something when the time is over
+            current_time.restart()
 
         for a in state.page.articles:
             window.draw(a.get_text())
