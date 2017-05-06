@@ -1,5 +1,7 @@
 from sfml import sf
 
+resolution = (1024, 768)
+
 class Day():
     def __init__(self, pages):
         self.pages = pages
@@ -44,6 +46,19 @@ class ArticleTitle():
 class Page():
     def __init__(self, articles):
         self.articles = articles
+
+    def get_map_texture(self):
+        base = sf.RenderTexture(resolution[0], resolution[1])
+        base.clear(sf.Color.TRANSPARENT)
+        for a in self.articles:
+            bounds = a.get_text().global_bounds
+            rect = sf.RectangleShape((bounds.size[0]-5, bounds.size[1]-5))
+            rect.position = bounds.position[0], (bounds.position[1] - (bounds.position[1] - resolution[1]/2)*2)-bounds.size[1]+5 # it works, don't ask how
+            rect.fill_color = sf.Color.BLACK
+            base.draw(rect)
+
+        return base
+
 
     def get_image(self):
 
