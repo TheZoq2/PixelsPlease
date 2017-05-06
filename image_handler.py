@@ -37,9 +37,3 @@ def compare_images(base, user):
     #print("GOV SCORE MAX: "+str(gov_score_max)+" SCORE: "+str(gov_score)+" PER: "+str(per_goverment)
 
     return per_people, per_goverment
-
-
-base = sf.Image.from_file("../base.png")
-user = sf.Image.from_file("../user.png")
-
-sc = compare_images(base, user)
