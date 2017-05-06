@@ -1,6 +1,7 @@
 #!/usr/bin/python3
-from sfml import sf;
-import sfml;
+from sfml import sf
+import sfml
+import event_handler
 
 import time
 
@@ -15,9 +16,6 @@ def main():
         window.display()
 
         for event in window.events:
-            #if type(event) is sf.CloseEvent:
-            if event.type == sf.Event.CLOSED:
-                window.close()
-                exit()
+            event_handler.check_event(window, event)
 
 main()
