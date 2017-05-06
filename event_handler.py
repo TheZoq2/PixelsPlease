@@ -27,6 +27,6 @@ def check_event(window, event):
             window.close()
             exit()
 
-    if event.type == sf.Event.CLOSED:
+    if type(event) is sf.CloseEvent:
         window.close()
         exit()
