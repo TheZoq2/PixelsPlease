@@ -106,7 +106,7 @@ def main():
 
                 state.censor_textures[current_page].display()
                 window.draw(sf.Sprite(state.papers[current_page]))
-                #window.draw(sf.Sprite(state.map.texture)) # debug
+                #window.draw(sf.Sprite(state.maps[current_page].texture)) # debug
                 window.draw(state.censor_sprites[current_page],
                             sf.RenderStates(shader=state.censor_shader))
 

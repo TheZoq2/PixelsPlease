@@ -92,7 +92,7 @@ def h_action(world_state):
     action = pick_one(world_state.actions)
 
     entity = get_random_entity(world_state)
-    return (action.text.format(entity.name), C_BAD * entity.standing * action.coolness)
+    return (action.text.format(entity.name), C_BAD * entity.standing * action.coolness * -1)
 
 def h_affair(world_state):
     scenario = "{} has had an affair with {}"
@@ -111,7 +111,7 @@ def h_election_good(world_state):
 
     entity = get_random_entity(world_state)
 
-    standing = C_GOOD if entity == E_PRO_GOV else C_BAD
+    standing = C_GOOD if entity.standing == E_PRO_GOV else C_BAD
     return (scenario.format(entity.name), standing)
 
 
