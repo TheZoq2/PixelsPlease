@@ -50,7 +50,7 @@ def check_event(window, event, state, current_page):
                 state.music_silenced = True
 
         if event.pressed and event.code == sf.Keyboard.C:
-            state.censor.clear(sf.Color.WHITE)
+            state.censor_textures[current_page].clear(sf.Color.WHITE)
             print("clear the censored areas")
 
     if type(event) is sf.CloseEvent:
