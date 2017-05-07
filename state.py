@@ -53,6 +53,7 @@ class State():
             [sf.RenderTexture(resolution[0], resolution[1]) for _ in self.day.pages]
         self.censor_shader = sf.Shader.from_file("media/shaders/censor.vert", "media/shaders/censor.frag")
 
+        self.censor_sprites = []
         for censor_texture in self.censor_textures:
             censor_texture.clear(sf.Color.TRANSPARENT)
             self.censor_sprites.append(sf.Sprite(censor_texture.texture))

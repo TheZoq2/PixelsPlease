@@ -53,8 +53,6 @@ def main():
     state = State()
 
     state.init_world_state()
-    state.init_day()
-    state.init_censor()
 
     clock_font = sf.Font.from_file("media/fonts/Pixelated-Regular.ttf")
 
@@ -80,6 +78,8 @@ def main():
     working = True
 
     while not state.game_over:
+        state.init_day()
+        state.init_censor()
         while working:
             working_in_page = True
 
@@ -180,11 +180,11 @@ def end_of_day(state, window):
 
     #TODO Show states
 
-    end_day_texture = sf.Texture.from_file("media/images/end_day.png")
+    end_day_texture = sf.Texture.from_file("media/images/table_texture.png")
     end_day_sprite = sf.Sprite(end_day_texture)
 
 
-    sleep_button_texture = sf.Texture.from_file("media/images/continue_button.png") # temporal
+    sleep_button_texture = sf.Texture.from_file("media/images/go_to_sleep_button.png") # temporal
     sleep_button_sprite = sf.Sprite(sleep_button_texture)
     sleep_button_size = (100, 50)
     sleep_button_position = (resolution[0] - sleep_button_size[0] - 10, \
@@ -241,7 +241,7 @@ def progress_bar(name, progress, posx, posy):
     black.fill_color = sf.Color.BLACK
 
     red = sf.RectangleShape((80, red_size))
-    red.position = posx, black.position.x+black_size
+    red.position = posx, black.position.y+black_size
     red.fill_color = sf.Color.RED
 
     base.draw(black)
