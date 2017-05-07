@@ -20,11 +20,7 @@ class Article():
             count = 20
 
         rt = ""
-
-        chars = copy.deepcopy(self.text)
-        last_space = None
-
-        words = chars.split(" ")
+        words = self.text.split(" ")
 
         current_len = 0
         for word in words:
