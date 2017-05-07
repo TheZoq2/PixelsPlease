@@ -54,7 +54,7 @@ def load_texture_and_sprite(filename, pos):
 
 def main():
     window = sf.RenderWindow(sf.VideoMode(resolution[0], resolution[1]),
-                             "Pixels please", sf.Style.CLOSE)
+                             "Institute of alternative facts", sf.Style.CLOSE)
     state = State()
 
     state.init_world_state()
@@ -86,11 +86,13 @@ def main():
         (resolution[0] - clear_button_width - 10, 10)
     )
 
-    working = True
-
     while not state.game_over:
         state.init_day()
         state.init_censor()
+
+        working = True
+        publish_button_shown = False
+
         while working:
             working_in_page = True
 
@@ -112,32 +114,35 @@ def main():
                 if current_page > 0:
                     window.draw(prev_button_sprite)
 
-                window.draw(publish_button_sprite)
+                if publish_button_shown:
+                    window.draw(publish_button_sprite)
                 window.draw(clear_button_sprite)
 
                 window.display()
+
+                on_last_page = current_page + 1 >= len(state.day.pages)
+                if on_last_page:
+                    publish_button_shown = True
 
                 for event in window.events:
                     rt = event_handler.check_event(window, event, state, current_page)
 
                     if isinstance(event, sf.MouseButtonEvent):
                         if event.pressed and event.button == sf.Mouse.LEFT:
-                            mouse_position = sf.Mouse.get_position(window)
-
                             def button_clicked(sprite):
+                                mouse_position = sf.Mouse.get_position(window)
                                 return sprite.global_bounds.contains(mouse_position)
 
                             if button_clicked(prev_button_sprite) and current_page > 0:
                                 current_page -= 1
 
-                            on_last_page = current_page + 1 >= len(state.day.pages)
                             if button_clicked(next_button_sprite) and not on_last_page:
                                 current_page += 1
 
                             if button_clicked(clear_button_sprite):
                                 state.censor_textures[current_page].clear(sf.Color.WHITE)
 
-                            if button_clicked(publish_button_sprite):
+                            if publish_button_shown and button_clicked(publish_button_sprite):
                                 working_in_page = False
                                 working = False
         # end of day
