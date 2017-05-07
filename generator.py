@@ -202,7 +202,7 @@ class WorldState():
 
         result += "====================\n"
 
-        result += "Clickbait is: " + "legal" if self.clickbait_state == C_NEUTRAL else "illegal"
+        result += "Clickbait is: " + ("legal" if self.clickbait_state == C_NEUTRAL else "illegal")
 
         return result
 
