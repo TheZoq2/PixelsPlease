@@ -66,14 +66,17 @@ def main():
     button_size = (100, 50)
     next_button_texture = sf.Texture.from_file("media/images/next_button.png")
     next_button_sprite = sf.Sprite(next_button_texture)
-    next_button_position = (resolution[0] - button_size[0] - 10, \
-                                resolution[1] - button_size[1] - 10)
-    next_button_sprite.position = (next_button_position[0], next_button_position[1])
+    next_button_sprite.position = (resolution[0] - button_size[0] - 10, \
+                                   resolution[1] - button_size[1] - 10)
 
     prev_button_texture = sf.Texture.from_file("media/images/back_button.png")
     prev_button_sprite = sf.Sprite(prev_button_texture)
-    prev_button_position = (10, resolution[1] - button_size[1] - 10)
-    prev_button_sprite.position = (prev_button_position[0], prev_button_position[1])
+    prev_button_sprite.position = (10, resolution[1] - button_size[1] - 10)
+
+    publish_button_texture = sf.Texture.from_file("media/images/publish_button.png")
+    publish_button_sprite = sf.Sprite(publish_button_texture)
+    publish_button_sprite.position = (resolution[0] // 2 - button_size[0] // 2,
+                                      resolution[1] - button_size[1] - 10)
 
     working = True
 
@@ -118,6 +121,8 @@ def main():
                 if current_page > 0:
                     window.draw(prev_button_sprite)
 
+                window.draw(publish_button_sprite)
+
                 window.display()
 
                 for event in window.events:
@@ -129,19 +134,18 @@ def main():
 
                             back_clicked = prev_button_sprite.global_bounds.contains(
                                 mouse_position
-                            ) and current_page > 0
+                            )
 
-                            if back_clicked:
+                            if back_clicked and current_page > 0:
                                 current_page -= 1
 
-                            if next_button_sprite.global_bounds.contains(mouse_position):
-                                working_in_page = False
+                            next_clicked = next_button_sprite.global_bounds.contains(mouse_position)
+                            if next_clicked and current_page + 1 < len(state.day.pages):
+                                current_page += 1
 
-                                # TODO: not needed when we have buttons
-                                if current_page + 1 >= len(state.day.pages):
-                                    working = False
-                                else:
-                                    current_page += 1
+                            if publish_button_sprite.global_bounds.contains(mouse_position):
+                                working_in_page = False
+                                working = False
         # end of day
         for i in range(len(state.day.pages)):
             end_censor(state, i)
