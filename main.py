@@ -94,9 +94,6 @@ def main():
         while working:
             working_in_page = True
 
-            time_limit = sf.seconds(30)
-            current_time = sf.Clock()
-
             while working_in_page:
                 #time.sleep(0.001) # If you remove this your computer might freze
 
@@ -105,20 +102,6 @@ def main():
                 #window.draw(sf.Sprite(state.map.texture)) # debug
                 window.draw(state.censor_sprites[current_page],
                             sf.RenderStates(shader=state.censor_shader))
-
-                clock_text = sf.Text("Time left: " +
-                                     str(int(time_limit.seconds - current_time.elapsed_time.seconds)))
-                clock_text.position = (10, 10)
-                clock_text.font = clock_font
-                clock_text.character_size = 12
-                clock_text.style = sf.Text.REGULAR
-                clock_text.color = sf.Color.BLUE
-
-                window.draw(clock_text)
-
-                if current_time.elapsed_time >= time_limit:
-                    #TODO: Do something when the time is over
-                    current_time.restart()
 
                 for a in state.day.pages[current_page].articles:
                     window.draw(a.get_text())
