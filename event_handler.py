@@ -56,7 +56,6 @@ def check_event(window, event, state, current_page):
 
         if event.pressed and event.code == sf.Keyboard.C:
             state.censor_textures[current_page].clear(sf.Color.WHITE)
-            print("clear the censored areas")
 
         if event.pressed and event.code == sf.Keyboard.N:
             state.is_viewing_notes = not state.is_viewing_notes
