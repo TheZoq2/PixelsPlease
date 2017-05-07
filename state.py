@@ -13,6 +13,7 @@ class State():
         self.salary = 50 # ??
         self.day = None
         self.is_viewing_notes = False
+        self.note_text = None
 
         self.maps = []
         self.papers = []

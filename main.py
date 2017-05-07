@@ -118,6 +118,17 @@ def main():
                 window.draw(publish_button_sprite)
                 window.draw(clear_button_sprite)
 
+                if state.is_viewing_notes:
+                    window.draw(state.note_list_sprite)
+                    font = sf.Font.from_file("media/fonts/Pixelated-Regular.ttf")
+                    note_text = sf.Text(state.world_state.get_state_text())
+                    note_text.position = (260, 100)
+                    note_text.font = font
+                    note_text.character_size = 12
+                    note_text.style = sf.Text.REGULAR
+                    note_text.color = sf.Color.BLACK
+                    window.draw(note_text)
+
                 window.display()
 
                 for event in window.events:

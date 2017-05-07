@@ -1,25 +1,33 @@
 from sfml import sf
 import draw
 
+def set_showing_notes(state, is_viewing):
+    state.is_viewing_notes = is_viewing
+
+    if is_viewing:
+        pass
+
 def check_event(window, event, state, current_page):
     mouse_position = sf.Mouse.get_position(window)
 
     if type(event) is sf.MouseMoveEvent:
-        if sf.Mouse.is_button_pressed(sf.Mouse.LEFT):
-            mouse_position = sf.Mouse.get_position(window)
-            draw.censor(state.censor_textures[current_page], mouse_position)
+        if not state.is_viewing_notes:
+            if sf.Mouse.is_button_pressed(sf.Mouse.LEFT):
+                mouse_position = sf.Mouse.get_position(window)
+                draw.censor(state.censor_textures[current_page], mouse_position)
 
-        elif sf.Mouse.is_button_pressed(sf.Mouse.RIGHT):
-            mouse_position = sf.Mouse.get_position(window)
-            draw.uncensor(state.censor_textures[current_page], mouse_position)
+            elif sf.Mouse.is_button_pressed(sf.Mouse.RIGHT):
+                mouse_position = sf.Mouse.get_position(window)
+                draw.uncensor(state.censor_textures[current_page], mouse_position)
 
 
     if type(event) is sf.MouseButtonEvent:
-        if event.pressed and event.button == sf.Mouse.LEFT:
-            draw.censor(state.censor_textures[current_page], mouse_position)
+        if not state.is_viewing_notes:
+            if event.pressed and event.button == sf.Mouse.LEFT:
+                draw.censor(state.censor_textures[current_page], mouse_position)
 
-        if event.pressed and event.button == sf.Mouse.RIGHT:
-            draw.uncensor(state.censor_textures[current_page], mouse_position)
+            if event.pressed and event.button == sf.Mouse.RIGHT:
+                draw.uncensor(state.censor_textures[current_page], mouse_position)
 
         if event.released and event.button == sf.Mouse.LEFT:
             pass
@@ -51,6 +59,9 @@ def check_event(window, event, state, current_page):
         if event.pressed and event.code == sf.Keyboard.C:
             state.censor.clear(sf.Color.WHITE)
             print("clear the censored areas")
+
+        if event.pressed and event.code == sf.Keyboard.N:
+            state.is_viewing_notes = not state.is_viewing_notes
 
     if type(event) is sf.CloseEvent:
         window.close()
