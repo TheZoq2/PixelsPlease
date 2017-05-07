@@ -28,7 +28,7 @@ class Entity:
             }[self.standing].format(self.name)
 
 ENTITIES = [
-        Entity("General Valdimir", E_PRO_GOV),
+        Entity("General Vladimir", E_PRO_GOV),
         Entity("Emperor Josef", E_PRO_GOV),
         Entity("KGB leader Alexandr Blinov", E_PRO_GOV),
         Entity("President Anatoli", E_PRO_GOV),
@@ -202,7 +202,7 @@ class WorldState():
 
         result += "====================\n"
 
-        result += "Clickbait is: " + "legal" if self.clickbait_state == C_NEUTRAL else "illegal"
+        result += "Clickbait is: " + ("legal" if self.clickbait_state == C_NEUTRAL else "illegal")
 
         return result
 
