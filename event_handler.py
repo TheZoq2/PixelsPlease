@@ -35,8 +35,6 @@ def check_event(window, event, state, current_page):
         if event.released and event.button == sf.Mouse.RIGHT:
             pass
 
-    if type(event) is sf.ResizeEvent:
-        window.setView(sf.View(sf.FloatRect(0, 0, event.size.width, event.size.height)));
 
     if type(event) is sf.KeyEvent:
         if event.pressed and event.code == sf.Keyboard.X:
