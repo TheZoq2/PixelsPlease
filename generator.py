@@ -21,14 +21,21 @@ class Entity:
         self.standing = standing
 
 ENTITIES = [
-        Entity("The prince", E_PRO_GOV),
-        Entity("The queen", E_PRO_GOV),
-        Entity("The king", E_PRO_GOV),
-        Entity("The emperor", E_PRO_GOV),
-        Entity("The opposition", E_ANTI_GOV),
-        Entity("The capitalist", E_ANTI_GOV),
+        Entity("General Valdimir", E_PRO_GOV),
+        Entity("Emperor Josef", E_PRO_GOV),
+        Entity("KGB leader Alexandr Blinov", E_PRO_GOV),
+        Entity("Peresident Anatoli", E_PRO_GOV),
+        Entity("Empress Swetlana", E_PRO_GOV),
+
+        Entity("Rebel general Andrei", E_ANTI_GOV),
+        Entity("Opposition leader Maxim Ivanov", E_ANTI_GOV),
+
         Entity("Justin Bieber", E_NEUTRAL),
-        Entity("A child", E_NEUTRAL),
+        Entity("Charlie Sheen", E_NEUTRAL),
+        Entity("Former former president Obama", E_NEUTRAL),
+        Entity("Hugh Hefner", E_NEUTRAL),
+        Entity("Stefan Löfven", E_NEUTRAL),
+        Entity("Göran Persson", E_NEUTRAL),
     ]
 
 def random_entity_name():
