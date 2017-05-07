@@ -166,6 +166,20 @@ def diversify_headline(headline_function):
 
     return fun
 
+def check_illegal_mentions(headline_function):
+    def fun(world_state): 
+        temp = headline_function(world_state)
+
+        consequence = temp[1]
+
+        for illegal in world_state.illegal_people:
+            if illegal.name in temp[0]:
+                consequence = C_BAD
+
+        return (temp[0], consequence)
+
+    return fun
+
 
 HEADLINE_TEMPLATES = [
         diversify_headline(h_action),
@@ -187,6 +201,7 @@ class WorldState():
         self.entities = copy.deepcopy(ENTITIES)
         self.actions = copy.deepcopy(ACTIONS)
         self.clickbait_state = C_NEUTRAL
+        self.illegal_people = []
 
     def get_state_text(self):
         result = "People: \n"
@@ -202,7 +217,11 @@ class WorldState():
 
         result += "====================\n"
 
-        result += "Clickbait is: " + ("legal" if self.clickbait_state == C_NEUTRAL else "illegal")
+        result += "Clickbait is: {}\n".format(("legal" if self.clickbait_state == C_NEUTRAL else "illegal"))
+
+        result += "====================\n"
+        for person in self.illegal_people:
+            result += "Mentioning {} is illegal\n".format(person.name)
 
         return result
 
@@ -210,7 +229,7 @@ class WorldState():
 
 
 def generate_headline(world_state):
-    return pick_one(HEADLINE_TEMPLATES)(world_state)
+    return check_illegal_mentions(pick_one(HEADLINE_TEMPLATES))(world_state)
 
 
 def ev_opinion_change(world_state):
@@ -248,6 +267,28 @@ def ev_clickbait_opinion_change(world_state):
         world_state.clickbait_state = C_NEUTRAL
         return "The government has removed the ban on clickbait"
 
+def ev_change_mention_status(world_state):
+    result = ""
+
+    #Check if we should add someone to the list
+    if random.randint(0, 1):
+        person = pick_one(world_state.entities)
+        world_state.illegal_people.append(person)
+        result += "mentioning {} is now illegal".format(person.name)
+
+    new_list = []
+
+    for i in range(0, len(world_state.illegal_people)):
+        if random.randint(0, 3) == 0:
+            result += "\nyou are allowed to mention {} again".format(world_state.illegal_people[i].name)
+        else:
+            new_list.append(world_state.illegal_people[i])
+
+    world_state.illegal_people = new_list
+
+    return result
+
+
 
 def random_event(world_state):
     return pick_one([
@@ -256,6 +297,9 @@ def random_event(world_state):
             ev_coolness_change,
             ev_coolness_change,
             ev_clickbait_opinion_change,
+            ev_change_mention_status,
+            ev_change_mention_status,
+            ev_change_mention_status,
         ])(world_state)
 
 
@@ -268,5 +312,6 @@ if __name__ == "__main__":
     print(generate_headline(world_state))
     print(ev_opinion_change(world_state))
     print(ev_coolness_change(world_state))
+    print(ev_change_mention_status(world_state))
 
     print(world_state.get_state_text())
