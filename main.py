@@ -54,7 +54,7 @@ def load_texture_and_sprite(filename, pos):
 
 def main():
     window = sf.RenderWindow(sf.VideoMode(resolution[0], resolution[1]),
-                             "Pixels please", sf.Style.CLOSE)
+                             "Institute of alternative facts", sf.Style.CLOSE)
     state = State()
 
     state.init_world_state()
@@ -94,6 +94,10 @@ def main():
     while not state.game_over:
         state.init_day()
         state.init_censor()
+
+        working = True
+        publish_button_shown = False
+
         while working:
             working_in_page = True
 
@@ -115,7 +119,8 @@ def main():
                 if current_page > 0:
                     window.draw(prev_button_sprite)
 
-                window.draw(publish_button_sprite)
+                if publish_button_shown:
+                    window.draw(publish_button_sprite)
                 window.draw(clear_button_sprite)
 
                 if state.is_viewing_notes:
@@ -131,27 +136,29 @@ def main():
 
                 window.display()
 
+                on_last_page = current_page + 1 >= len(state.day.pages)
+                if on_last_page:
+                    publish_button_shown = True
+
                 for event in window.events:
                     rt = event_handler.check_event(window, event, state, current_page)
 
                     if isinstance(event, sf.MouseButtonEvent):
                         if event.pressed and event.button == sf.Mouse.LEFT:
-                            mouse_position = sf.Mouse.get_position(window)
-
                             def button_clicked(sprite):
+                                mouse_position = sf.Mouse.get_position(window)
                                 return sprite.global_bounds.contains(mouse_position)
 
                             if button_clicked(prev_button_sprite) and current_page > 0:
                                 current_page -= 1
 
-                            on_last_page = current_page + 1 >= len(state.day.pages)
                             if button_clicked(next_button_sprite) and not on_last_page:
                                 current_page += 1
 
                             if button_clicked(clear_button_sprite):
                                 state.censor_textures[current_page].clear(sf.Color.WHITE)
 
-                            if button_clicked(publish_button_sprite):
+                            if publish_button_shown and button_clicked(publish_button_sprite):
                                 working_in_page = False
                                 working = False
         # end of day
@@ -185,10 +192,14 @@ def end_of_day(state, window):
     # Select a random amount of events to trigger
     event_amount = random.randint(1, 5)
 
+    noticeList = []
+    noticeList.append(state.get_people_state())
+    noticeList.append(state.get_government_state())
+
     for i in range(0, event_amount):
         result = generator.random_event(state.world_state)
         if result:
-            print(result)
+            noticeList.append(result)
 
     #TODO Show states
 
@@ -203,16 +214,20 @@ def end_of_day(state, window):
                                 resolution[1] - sleep_button_size[1] - 10)
     sleep_button_sprite.position = (sleep_button_position[0], sleep_button_position[1])
 
-    people_bar = progress_bar("People", state.people_score, 250, 85)
+    notices = notice_panel(noticeList)
+    notices_sprite = sf.Sprite(notices.texture)
+    people_bar = progress_bar("People", state.people_score, resolution[0]/2-180, 60)
     people_bar_sprite = sf.Sprite(people_bar.texture)
-    goverment_bar = progress_bar("Government", state.goverment_score, 580, 85)
+    goverment_bar = progress_bar("Government", state.goverment_score, resolution[0]/2+100, 60)
     goverment_bar_sprite = sf.Sprite(goverment_bar.texture)
 
     while True:
         window.draw(end_day_sprite)
+        window.draw(notices_sprite)
         window.draw(sleep_button_sprite)
         window.draw(goverment_bar_sprite)
         window.draw(people_bar_sprite)
+
         window.display()
 
         for event in window.events:
@@ -231,6 +246,27 @@ def end_of_day(state, window):
                     if sleep_button_sprite.global_bounds.contains(mouse_position):
                         state.score_music.stop()
                         return
+
+def notice_panel(notices):
+    base = sf.RenderTexture(resolution[0], resolution[1])
+    base.clear(sf.Color.TRANSPARENT)
+
+    font = sf.Font.from_file("media/fonts/Pixelated-Regular.ttf")
+    title = sf.Text()
+    title.font = font
+    title.character_size = 20
+    title.style = sf.Text.REGULAR
+    title.color = sf.Color.WHITE
+
+    for i, n in enumerate(notices):
+        title.string = n
+        title.position = (10, 25*i+(resolution[1]*0.7))
+
+        base.draw(title)
+
+    base.display()
+    return base
+
 
 
 def progress_bar(name, progress, posx, posy):

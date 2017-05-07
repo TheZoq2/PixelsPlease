@@ -1,8 +1,12 @@
 from sfml import sf
+import random
 import generator
 from models import Article, Page, Day
 
 resolution = (1024, 768)
+
+def pick_one(seq):
+    return random.sample(seq, 1)
 
 class State():
     def __init__(self):
@@ -74,6 +78,50 @@ class State():
     def new_score(self, people_score, goverment_score):
         self.people_score = (self.people_score * 0.3) + (people_score * 0.7)
         self.goverment_score = (self.goverment_score * 0.3) + (goverment_score * 0.7)
+
+    def get_states(self):
+        return self.get_people_state(), self.get_government_state()
+
+    def get_people_state(self):
+        if self.people_state == "empowered":
+            if self.people_score > 70:
+                return "The people are feeling empowered. The rebels may act."
+            else:
+                return "The people are feeling empowered"
+        elif self.people_state == "normal":
+            return pick_one([
+                "Some people are angry with the government",
+                "People are fine, some of them at least",
+                "People are not angry"
+            ])
+        elif self.people_state == "demostrations":
+            return pick_one([
+                "Demonstrations all over the country",
+                "People are demonstrating, riots may start",
+                "People are angry with the government"
+            ])
+        elif self.people_state == "riots":
+            return pick_one([
+                "Demonstrations have ended in riots",
+                "Riots all over the country. The rebels may act.",
+                "The rebels may use the chaos to start a revolution"
+            ])
+        else:
+            return "There was a revolution" # revolution, game over
+
+    def get_government_state(self):
+        if self.goverment_state == "+20":
+            return "The government is very happy with you."
+        elif self.goverment_state == "+10":
+            return "The goverment likes your attitude"
+        elif self.goverment_state == "normal":
+            return "You are a normal worker for the government"
+        elif self.goverment_state == "-10":
+            return "The government doesn't like your attitude"
+        elif self.goverment_state == "-20":
+            return "The government is starting to think that you are a rebel"
+        else: # jail -> game over
+            return "You are in jail accused of acting against the government"
 
     def new_state(self):
         self.new_people_state()
