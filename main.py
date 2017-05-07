@@ -46,6 +46,11 @@ def title_screen(window, music):
                         music.stop()
                         return
 
+def load_texture_and_sprite(filename, pos):
+    texture = sf.Texture.from_file(filename)
+    sprite = sf.Sprite(texture)
+    sprite.position = pos
+    return sprite
 
 def main():
     window = sf.RenderWindow(sf.VideoMode(resolution[0], resolution[1]),
@@ -62,21 +67,24 @@ def main():
     state.work_music.play()
 
     current_page = 0
-
     button_size = (100, 50)
-    next_button_texture = sf.Texture.from_file("media/images/next_button.png")
-    next_button_sprite = sf.Sprite(next_button_texture)
-    next_button_sprite.position = (resolution[0] - button_size[0] - 10, \
-                                   resolution[1] - button_size[1] - 10)
 
-    prev_button_texture = sf.Texture.from_file("media/images/back_button.png")
-    prev_button_sprite = sf.Sprite(prev_button_texture)
-    prev_button_sprite.position = (10, resolution[1] - button_size[1] - 10)
-
-    publish_button_texture = sf.Texture.from_file("media/images/publish_button.png")
-    publish_button_sprite = sf.Sprite(publish_button_texture)
-    publish_button_sprite.position = (resolution[0] // 2 - button_size[0] // 2,
-                                      resolution[1] - button_size[1] - 10)
+    next_button_sprite = load_texture_and_sprite(
+        "media/images/next_button.png",
+        (resolution[0] - button_size[0] - 10, resolution[1] - button_size[1] - 10)
+    )
+    prev_button_sprite = load_texture_and_sprite(
+        "media/images/back_button.png", (10, resolution[1] - button_size[1] - 10)
+    )
+    publish_button_sprite = load_texture_and_sprite(
+        "media/images/publish_button.png",
+        (resolution[0] // 2 - button_size[0] // 2, resolution[1] - button_size[1] - 10)
+    )
+    clear_button_width = 50
+    clear_button_sprite = load_texture_and_sprite(
+        "media/images/clear_all_button.png",
+        (resolution[0] - clear_button_width - 10, 10)
+    )
 
     working = True
 
@@ -122,6 +130,7 @@ def main():
                     window.draw(prev_button_sprite)
 
                 window.draw(publish_button_sprite)
+                window.draw(clear_button_sprite)
 
                 window.display()
 
@@ -132,18 +141,20 @@ def main():
                         if event.pressed and event.button == sf.Mouse.LEFT:
                             mouse_position = sf.Mouse.get_position(window)
 
-                            back_clicked = prev_button_sprite.global_bounds.contains(
-                                mouse_position
-                            )
+                            def button_clicked(sprite):
+                                return sprite.global_bounds.contains(mouse_position)
 
-                            if back_clicked and current_page > 0:
+                            if button_clicked(prev_button_sprite) and current_page > 0:
                                 current_page -= 1
 
-                            next_clicked = next_button_sprite.global_bounds.contains(mouse_position)
-                            if next_clicked and current_page + 1 < len(state.day.pages):
+                            on_last_page = current_page + 1 >= len(state.day.pages)
+                            if button_clicked(next_button_sprite) and not on_last_page:
                                 current_page += 1
 
-                            if publish_button_sprite.global_bounds.contains(mouse_position):
+                            if button_clicked(clear_button_sprite):
+                                state.censor_textures[current_page].clear(sf.Color.WHITE)
+
+                            if button_clicked(publish_button_sprite):
                                 working_in_page = False
                                 working = False
         # end of day
