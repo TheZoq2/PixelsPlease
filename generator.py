@@ -62,7 +62,8 @@ ACTIONS = [
             Action("{} is considered a pro skateboarder", "skateboarding", A_COOL),
             Action("{} has donated a large sum to charity", "donating money", A_COOL),
             Action("{} has saved the life of {}".format("{}", random_entity_name()),
-                "saving people's lives", A_COOL)
+                "saving people's lives", A_COOL),
+            Action("Nudes of {} have been leaked", "having your nudes leaked", A_UNCOOL)
         ]
 
 
