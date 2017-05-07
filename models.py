@@ -1,5 +1,4 @@
 from sfml import sf
-import copy
 
 resolution = (1024, 768)
 
@@ -29,10 +28,9 @@ class Article():
             if current_len > count:
                 rt += "\n"
                 current_len = 0
-                rt += word
-            else:
-                rt += word
-                rt += " "
+
+            rt += word
+            rt += " "
 
 
 
