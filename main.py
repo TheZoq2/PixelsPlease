@@ -79,7 +79,7 @@ def main():
 
             state.censor_texture.display()
             window.draw(sf.Sprite(state.paper))
-            window.draw(sf.Sprite(state.map.texture)) # debug
+            #window.draw(sf.Sprite(state.map.texture)) # debug
             window.draw(state.censor_texture_sprite, sf.RenderStates(shader=shader))
 
             clock_text = sf.Text("Time left: " + str(int(time_limit.seconds - current_time.elapsed_time.seconds)))
