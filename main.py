@@ -46,6 +46,11 @@ def title_screen(window, music):
                         music.stop()
                         return
 
+def load_texture_and_sprite(filename, pos):
+    texture = sf.Texture.from_file(filename)
+    sprite = sf.Sprite(texture)
+    sprite.position = pos
+    return sprite
 
 def main():
     window = sf.RenderWindow(sf.VideoMode(resolution[0], resolution[1]),
@@ -62,18 +67,24 @@ def main():
     state.work_music.play()
 
     current_page = 0
-
     button_size = (100, 50)
-    next_button_texture = sf.Texture.from_file("media/images/next_button.png")
-    next_button_sprite = sf.Sprite(next_button_texture)
-    next_button_position = (resolution[0] - button_size[0] - 10, \
-                                resolution[1] - button_size[1] - 10)
-    next_button_sprite.position = (next_button_position[0], next_button_position[1])
 
-    prev_button_texture = sf.Texture.from_file("media/images/back_button.png")
-    prev_button_sprite = sf.Sprite(prev_button_texture)
-    prev_button_position = (10, resolution[1] - button_size[1] - 10)
-    prev_button_sprite.position = (prev_button_position[0], prev_button_position[1])
+    next_button_sprite = load_texture_and_sprite(
+        "media/images/next_button.png",
+        (resolution[0] - button_size[0] - 10, resolution[1] - button_size[1] - 10)
+    )
+    prev_button_sprite = load_texture_and_sprite(
+        "media/images/back_button.png", (10, resolution[1] - button_size[1] - 10)
+    )
+    publish_button_sprite = load_texture_and_sprite(
+        "media/images/publish_button.png",
+        (resolution[0] // 2 - button_size[0] // 2, resolution[1] - button_size[1] - 10)
+    )
+    clear_button_width = 50
+    clear_button_sprite = load_texture_and_sprite(
+        "media/images/clear_all_button.png",
+        (resolution[0] - clear_button_width - 10, 10)
+    )
 
     note_list = sf.Texture.from_file("media/images/page_notebook.png")
     state.note_list_sprite = sf.Sprite(note_list)
@@ -86,9 +97,6 @@ def main():
         while working:
             working_in_page = True
 
-            time_limit = sf.seconds(30)
-            current_time = sf.Clock()
-
             while working_in_page:
                 #time.sleep(0.001) # If you remove this your computer might freze
 
@@ -97,20 +105,6 @@ def main():
                 #window.draw(sf.Sprite(state.map.texture)) # debug
                 window.draw(state.censor_sprites[current_page],
                             sf.RenderStates(shader=state.censor_shader))
-
-                clock_text = sf.Text("Time left: " +
-                                     str(int(time_limit.seconds - current_time.elapsed_time.seconds)))
-                clock_text.position = (10, 10)
-                clock_text.font = clock_font
-                clock_text.character_size = 12
-                clock_text.style = sf.Text.REGULAR
-                clock_text.color = sf.Color.BLUE
-
-                window.draw(clock_text)
-
-                if current_time.elapsed_time >= time_limit:
-                    #TODO: Do something when the time is over
-                    current_time.restart()
 
                 for a in state.day.pages[current_page].articles:
                     window.draw(a.get_text())
@@ -121,6 +115,9 @@ def main():
                 if current_page > 0:
                     window.draw(prev_button_sprite)
 
+                window.draw(publish_button_sprite)
+                window.draw(clear_button_sprite)
+
                 window.display()
 
                 for event in window.events:
@@ -130,21 +127,22 @@ def main():
                         if event.pressed and event.button == sf.Mouse.LEFT:
                             mouse_position = sf.Mouse.get_position(window)
 
-                            back_clicked = prev_button_sprite.global_bounds.contains(
-                                mouse_position
-                            ) and current_page > 0
+                            def button_clicked(sprite):
+                                return sprite.global_bounds.contains(mouse_position)
 
-                            if back_clicked:
+                            if button_clicked(prev_button_sprite) and current_page > 0:
                                 current_page -= 1
 
-                            if next_button_sprite.global_bounds.contains(mouse_position):
-                                working_in_page = False
+                            on_last_page = current_page + 1 >= len(state.day.pages)
+                            if button_clicked(next_button_sprite) and not on_last_page:
+                                current_page += 1
 
-                                # TODO: not needed when we have buttons
-                                if current_page + 1 >= len(state.day.pages):
-                                    working = False
-                                else:
-                                    current_page += 1
+                            if button_clicked(clear_button_sprite):
+                                state.censor_textures[current_page].clear(sf.Color.WHITE)
+
+                            if button_clicked(publish_button_sprite):
+                                working_in_page = False
+                                working = False
         # end of day
         for i in range(len(state.day.pages)):
             end_censor(state, i)
