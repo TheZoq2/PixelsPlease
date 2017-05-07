@@ -19,11 +19,21 @@ def title_screen(window, music):
     title_texture = sf.Texture.from_file("media/images/Letter.png");
     title_sprite = sf.Sprite(title_texture);
 
+    continue_button_texture = sf.Texture.from_file("media/images/continue_button.png")
+    continue_button_sprite = sf.Sprite(continue_button_texture)
+    continue_button_size = (100, 50)
+    continue_button_position = (resolution[0] - continue_button_size[0] - 10, \
+                                resolution[1] - continue_button_size[1] - 10)
+    continue_button_sprite.position = (continue_button_position[0], continue_button_position[1])
+
+
     music.play()
 
     while True:
         window.draw(title_sprite);
+        window.draw(continue_button_sprite)
         window.display()
+
 
         for event in window.events:
             if type(event) is sf.KeyEvent:
@@ -33,6 +43,18 @@ def title_screen(window, music):
                 if event.pressed and event.code == sf.Keyboard.RETURN:
                     music.stop()
                     return
+
+            if type(event) is sf.MouseButtonEvent:
+                if event.pressed and event.button == sf.Mouse.LEFT:
+                    mouse_position = sf.Mouse.get_position(window)
+
+                    if mouse_position.x >= continue_button_position[0] and \
+                       mouse_position.x <= continue_button_position[0] + continue_button_size[0] and \
+                       mouse_position.y >= continue_button_position[1] and \
+                       mouse_position.y <= continue_button_position[1] + continue_button_size[1]:
+                        music.stop()
+                        return
+
 
 def main():
     window = sf.RenderWindow(sf.VideoMode(resolution[0], resolution[1]), "Pixels please")
@@ -122,7 +144,7 @@ def end_censor(state, i):
     print("PEOPLE SCORE: "+str(per_people)) # debug
     print("GOV SCORE: "+str(per_goverment)) # debug
 
-    
+
 
 def generate_day(world_state):
     pages = []
