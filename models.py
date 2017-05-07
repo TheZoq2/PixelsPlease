@@ -2,11 +2,17 @@ from sfml import sf
 
 resolution = (1024, 768)
 
-class Article():
-    def __init__(self, x, y, size, headline):
+class Position():
+    def __init__(self, x, y, size):
         self.x = x
         self.y = y
-        self.size = size # tl, bg or sm
+        self.size = size
+
+class Article():
+    def __init__(self, position, headline):
+        self.x = position.x
+        self.y = position.y
+        self.size = position.size # tl, bg or sm
         self.text = headline[0]
         self.type = headline[1]
 

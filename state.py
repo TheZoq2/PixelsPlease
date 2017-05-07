@@ -1,12 +1,19 @@
 from sfml import sf
 import random
 import generator
-from models import Article, Page, Day
+from models import Article, Page, Day, Position
 
 resolution = (1024, 768)
 
 def pick_one(seq):
     return random.sample(seq, 1)
+
+TEMPLATES = [
+    [Position(260, 140, "bg"), Position(260, 330, "tl"), Position(550, 330, "sm"), Position(550, 450, "sm")],
+    [Position(260, 140, "sm"), Position(550, 140, "tl"), Position(260, 450, "bg")],
+    [Position(260, 140, "sm"), Position(550, 140, "sm"), Position(260, 330, "sm"), Position(550, 330, "sm"), Position(260, 450, "sm"), Position(550, 450, "sm")],
+    [Position(260, 140, "sm"), Position(550, 140, "sm"), Position(260, 330, "sm"), Position(550, 330, "sm"), Position(260, 450, "bg")]
+]
 
 class State():
     def __init__(self):
@@ -38,14 +45,11 @@ class State():
 
     def init_page(self):
         articles = []
-        headline = generator.generate_headline(self.world_state)
-        articles.append(Article(260, 140, "bg", headline))
-        headline = generator.generate_headline(self.world_state)
-        articles.append(Article(260, 330, "tl", headline))
-        headline = generator.generate_headline(self.world_state)
-        articles.append(Article(550, 330, "sm", headline))
-        headline = generator.generate_headline(self.world_state)
-        articles.append(Article(550, 450, "sm", headline))
+        secure_random = random.SystemRandom()
+        template = secure_random.choice(TEMPLATES)
+        for position in template:
+            headline = generator.generate_headline(self.world_state)
+            articles.append(Article(position, headline))
 
         return Page(articles)
 

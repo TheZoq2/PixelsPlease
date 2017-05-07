@@ -139,7 +139,11 @@ def main():
                 if publish_button_shown:
                     window.draw(publish_button_sprite)
 
-                if notebook_sprite.global_bounds.contains(sf.Mouse.get_position(window)):
+                mouse_pos = sf.Mouse.get_position(window)
+                mouse_in_window = mouse_pos.x >= 0 and mouse_pos.y >= 0 and \
+                                  mouse_pos.x < resolution[0] and mouse_pos.y < resolution[1]
+
+                if notebook_sprite.global_bounds.contains(mouse_pos) and mouse_in_window:
                     notebook_sprite.position = (resolution[0] - 191, notebook_start_pos[1])
                 else:
                     notebook_sprite.position = notebook_start_pos
@@ -203,8 +207,8 @@ def end_censor(state, i):
     state.day.pages[i].people_score = per_people
     state.day.pages[i].goverment_score = per_goverment
 
-    print("PEOPLE SCORE: "+str(per_people)) # debug
-    print("GOV SCORE: "+str(per_goverment)) # debug
+    # print("PEOPLE SCORE: "+str(per_people)) # debug
+    # print("GOV SCORE: "+str(per_goverment)) # debug
 
 
 def end_of_day(state, window):
@@ -217,9 +221,9 @@ def end_of_day(state, window):
         game_over(state, window)
         return
 
-    print("End of day!") # debug
-    print("PEOPLE: "+str(state.people_score)+" GOV: "+str(state.goverment_score)) # debug
-    print("STATES: People: "+state.people_state+" Gov: "+state.goverment_state) # debug
+    # print("End of day!") # debug
+    # print("PEOPLE: "+str(state.people_score)+" GOV: "+str(state.goverment_score)) # debug
+    # print("STATES: People: "+state.people_state+" Gov: "+state.goverment_state) # debug
 
     # Select a random amount of events to trigger
     event_amount = random.randint(1, 5)
