@@ -46,27 +46,24 @@ def title_screen(window, music):
                         music.stop()
                         return
 
+
 def load_texture_and_sprite(filename, pos):
     texture = sf.Texture.from_file(filename)
     sprite = sf.Sprite(texture)
     sprite.position = pos
     return sprite
 
+
 def main():
     window = sf.RenderWindow(sf.VideoMode(resolution[0], resolution[1]),
                              "Institute of alternative facts", sf.Style.CLOSE)
     state = State()
-
     state.init_world_state()
-
-    clock_font = sf.Font.from_file("media/fonts/Pixelated-Regular.ttf")
-
 
     title_screen(window, state.score_music)
 
     state.work_music.play()
 
-    current_page = 0
     button_size = (100, 50)
 
     next_button_sprite = load_texture_and_sprite(
@@ -86,10 +83,18 @@ def main():
         (resolution[0] - clear_button_width - 10, 10)
     )
 
+    page_text = sf.Text()
+    page_text.font = sf.Font.from_file("media/fonts/Pixelated-Regular.ttf")
+    page_text.character_size = 20
+    page_text.style = sf.Text.REGULAR
+    page_text.color = sf.Color.BLACK
+    page_text.position = (700, resolution[1] - 100)
+
     while not state.game_over:
         state.init_day()
         state.init_censor()
 
+        current_page = 0
         working = True
         publish_button_shown = False
 
@@ -99,14 +104,15 @@ def main():
             while working_in_page:
                 #time.sleep(0.001) # If you remove this your computer might freze
 
+                page_text.string = "page " + str(current_page + 1) + "/" + str(len(state.day.pages))
                 state.censor_textures[current_page].display()
                 window.draw(sf.Sprite(state.papers[current_page]))
                 #window.draw(sf.Sprite(state.map.texture)) # debug
                 window.draw(state.censor_sprites[current_page],
                             sf.RenderStates(shader=state.censor_shader))
 
-                for a in state.day.pages[current_page].articles:
-                    window.draw(a.get_text())
+                for article in state.day.pages[current_page].articles:
+                    window.draw(article.get_text())
 
                 if current_page + 1 < len(state.day.pages):
                     window.draw(next_button_sprite)
@@ -116,7 +122,9 @@ def main():
 
                 if publish_button_shown:
                     window.draw(publish_button_sprite)
+
                 window.draw(clear_button_sprite)
+                window.draw(page_text)
 
                 window.display()
 
@@ -150,8 +158,7 @@ def main():
             end_censor(state, i)
 
         end_of_day(state, window)
-        working = True
-        current_page = 0
+
 
 def end_censor(state, i):
     per_people, per_goverment = image_handler.compare_images(
@@ -163,6 +170,7 @@ def end_censor(state, i):
 
     print("PEOPLE SCORE: "+str(per_people)) # debug
     print("GOV SCORE: "+str(per_goverment)) # debug
+
 
 def end_of_day(state, window):
     people, gov = state.day.get_score()
@@ -189,7 +197,6 @@ def end_of_day(state, window):
 
     end_day_texture = sf.Texture.from_file("media/images/table_texture.png")
     end_day_sprite = sf.Sprite(end_day_texture)
-
 
     sleep_button_texture = sf.Texture.from_file("media/images/go_to_sleep_button.png") # temporal
     sleep_button_sprite = sf.Sprite(sleep_button_texture)
@@ -231,6 +238,7 @@ def end_of_day(state, window):
                         state.score_music.stop()
                         return
 
+
 def notice_panel(notices):
     base = sf.RenderTexture(resolution[0], resolution[1])
     base.clear(sf.Color.TRANSPARENT)
@@ -242,6 +250,7 @@ def notice_panel(notices):
     title.style = sf.Text.REGULAR
     title.color = sf.Color.WHITE
 
+
     for i, n in enumerate(notices):
         title.string = n
         title.position = (10, 25*i+(resolution[1]*0.7))
@@ -250,7 +259,6 @@ def notice_panel(notices):
 
     base.display()
     return base
-
 
 
 def progress_bar(name, progress, posx, posy):
