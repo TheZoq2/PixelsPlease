@@ -141,6 +141,7 @@ def main():
                                 working_in_page = False
                                 working = False
         # end of day
+        show_loading_screen(window)
         for i in range(len(state.day.pages)):
             end_censor(state, i)
 
@@ -160,6 +161,7 @@ def end_censor(state, i):
     print("GOV SCORE: "+str(per_goverment)) # debug
 
 def end_of_day(state, window):
+
     people, gov = state.day.get_score()
     state.new_score(people, gov)
     state.new_state()
@@ -179,8 +181,6 @@ def end_of_day(state, window):
         result = generator.random_event(state.world_state)
         if result:
             noticeList.append(result)
-
-    #TODO Show states
 
     end_day_texture = sf.Texture.from_file("media/images/table_texture.png")
     end_day_sprite = sf.Sprite(end_day_texture)
@@ -278,5 +278,23 @@ def progress_bar(name, progress, posx, posy):
     base.display()
 
     return base
+
+def show_loading_screen(window):
+    base = sf.RenderTexture(resolution[0], resolution[1])
+    base.clear(sf.Color.BLACK)
+
+    font = sf.Font.from_file("media/fonts/Pixelated-Regular.ttf")
+    title = sf.Text("The government is checking your work")
+    title.font = font
+    title.character_size = 30
+    title.style = sf.Text.REGULAR
+    title.color = sf.Color.WHITE
+    title.position = (resolution[0]/2-400, resolution[1]/2-25)
+
+    base.draw(title)
+    base.display()
+
+    window.draw(sf.Sprite(base.texture))
+    window.display()
 
 main()
