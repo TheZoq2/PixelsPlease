@@ -33,11 +33,12 @@ class Article():
             if current_len > count:
                 rt += "\n"
                 current_len = 0
+                rt += word
             else:
+                rt += word
                 rt += " "
 
 
-            rt += word
 
         return rt
 
