@@ -63,6 +63,9 @@ def check_event(window, event, state, current_page):
         if event.pressed and event.code == sf.Keyboard.N:
             state.is_viewing_notes = not state.is_viewing_notes
 
+        if event.pressed and event.code == sf.Keyboard.ESCAPE:
+            state.is_viewing_notes = False
+
     if type(event) is sf.CloseEvent:
         window.close()
         exit()

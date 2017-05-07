@@ -47,7 +47,7 @@ def title_screen(window, music):
                         return
 
 
-def load_texture_and_sprite(filename, pos):
+def load_sprite_with_pos(filename, pos):
     texture = sf.Texture.from_file(filename)
     sprite = sf.Sprite(texture)
     sprite.position = pos
@@ -57,6 +57,11 @@ def load_texture_and_sprite(filename, pos):
 def main():
     window = sf.RenderWindow(sf.VideoMode(resolution[0], resolution[1]),
                              "Institute of alternative facts", sf.Style.CLOSE)
+
+    def button_clicked(sprite):
+        mouse_position = sf.Mouse.get_position(window)
+        return sprite.global_bounds.contains(mouse_position)
+
     state = State()
     state.init_world_state()
 
@@ -66,21 +71,27 @@ def main():
 
     button_size = (100, 50)
 
-    next_button_sprite = load_texture_and_sprite(
+    next_button_sprite = load_sprite_with_pos(
         "media/images/next_button.png",
         (resolution[0] - button_size[0] - 10, resolution[1] - button_size[1] - 10)
     )
-    prev_button_sprite = load_texture_and_sprite(
+    prev_button_sprite = load_sprite_with_pos(
         "media/images/back_button.png", (10, resolution[1] - button_size[1] - 10)
     )
-    publish_button_sprite = load_texture_and_sprite(
+    publish_button_sprite = load_sprite_with_pos(
         "media/images/publish_button.png",
         (resolution[0] // 2 - button_size[0] // 2, resolution[1] - button_size[1] - 10)
     )
     clear_button_width = 50
-    clear_button_sprite = load_texture_and_sprite(
+    clear_button_sprite = load_sprite_with_pos(
         "media/images/clear_all_button.png",
         (resolution[0] - clear_button_width - 10, 10)
+    )
+
+    notebook_start_pos = (resolution[0] - 100, 200)
+    notebook_sprite = load_sprite_with_pos(
+        "media/images/notebook_button.png",
+        notebook_start_pos
     )
 
     note_list = sf.Texture.from_file("media/images/page_notebook.png")
@@ -128,7 +139,13 @@ def main():
                 if publish_button_shown:
                     window.draw(publish_button_sprite)
 
+                if notebook_sprite.global_bounds.contains(sf.Mouse.get_position(window)):
+                    notebook_sprite.position = (resolution[0] - 191, notebook_start_pos[1])
+                else:
+                    notebook_sprite.position = notebook_start_pos
+
                 window.draw(clear_button_sprite)
+                window.draw(notebook_sprite)
                 window.draw(page_text)
 
                 if state.is_viewing_notes:
@@ -153,10 +170,6 @@ def main():
 
                     if isinstance(event, sf.MouseButtonEvent):
                         if event.pressed and event.button == sf.Mouse.LEFT:
-                            def button_clicked(sprite):
-                                mouse_position = sf.Mouse.get_position(window)
-                                return sprite.global_bounds.contains(mouse_position)
-
                             if button_clicked(prev_button_sprite) and current_page > 0:
                                 current_page -= 1
 
@@ -165,6 +178,11 @@ def main():
 
                             if button_clicked(clear_button_sprite):
                                 state.censor_textures[current_page].clear(sf.Color.WHITE)
+
+                            if button_clicked(notebook_sprite) and not state.is_viewing_notes:
+                                state.is_viewing_notes = True
+                            elif state.is_viewing_notes:
+                                state.is_viewing_notes = False
 
                             if publish_button_shown and button_clicked(publish_button_sprite):
                                 working_in_page = False
@@ -194,6 +212,10 @@ def end_of_day(state, window):
     people, gov = state.day.get_score()
     state.new_score(people, gov)
     state.new_state()
+
+    if state.people_state == "revolution" or state.goverment_state == "jail":
+        game_over(state, window)
+        return
 
     print("End of day!") # debug
     print("PEOPLE: "+str(state.people_score)+" GOV: "+str(state.goverment_score)) # debug
@@ -326,4 +348,47 @@ def show_loading_screen(window):
     window.draw(sf.Sprite(base.texture))
     window.display()
 
-main()
+def game_over(state, window):
+    state.game_over = True
+    if state.people_state == "revolution":
+        reason_string = state.get_people_state()
+    else:
+        reason_string = state.get_government_state()
+
+    base = sf.RenderTexture(resolution[0], resolution[1])
+    base.clear(sf.Color.BLACK)
+
+    font = sf.Font.from_file("media/fonts/Pixelated-Regular.ttf")
+    title = sf.Text("GAME OVER")
+    title.font = font
+    title.character_size = 70
+    title.style = sf.Text.REGULAR
+    title.color = sf.Color.RED
+    title.position = (resolution[0]/2-250, 100)
+
+    reason = sf.Text(reason_string)
+    reason.font = font
+    reason.character_size = 35
+    reason.style = sf.Text.REGULAR
+    reason.color = sf.Color.WHITE
+    reason.position = (resolution[0]/2-300, resolution[1]/2-60)
+
+    base.draw(title)
+    base.draw(reason)
+    base.display()
+
+    while True:
+        window.draw(sf.Sprite(base.texture))
+        window.display()
+
+        for event in window.events:
+            if type(event) is sf.KeyEvent:
+                if event.pressed and event.code == sf.Keyboard.X:
+                    window.close()
+                    exit()
+                if event.pressed and event.code == sf.Keyboard.RETURN:
+                    state.score_music.stop()
+                    return
+
+while True:
+    main()
