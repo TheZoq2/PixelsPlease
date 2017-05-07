@@ -22,6 +22,12 @@ class State():
         self.world_state = None
         self.game_over = False
 
+        self.work_music = sf.Music.from_file("media/music/PixelsPleaseCalm.ogg")
+        self.score_music = sf.Music.from_file("media/music/PixelsPleaseTitle.ogg")
+        self.work_music.loop = True
+        self.score_music.loop = True
+        self.music_silenced = False
+
     def init_page(self):
         articles = []
         headline = generator.generate_headline(self.world_state)
