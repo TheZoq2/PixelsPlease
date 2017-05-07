@@ -1,5 +1,4 @@
 from sfml import sf
-import copy
 
 resolution = (1024, 768)
 
@@ -29,10 +28,9 @@ class Article():
             if current_len > count:
                 rt += "\n"
                 current_len = 0
-                rt += word
-            else:
-                rt += word
-                rt += " "
+
+            rt += word
+            rt += " "
 
 
 
@@ -92,9 +90,9 @@ class Page():
     def get_image(self):
 
         base = sf.Image.from_file("media/images/empty_page.png")
-        bg = sf.Image.from_file("media/images/bg_article.png")
-        sm = sf.Image.from_file("media/images/sm_article.png")
-        tl = sf.Image.from_file("media/images/tl_article.png")
+        bg = sf.Image.from_file("media/images/bg_article_w.png")
+        sm = sf.Image.from_file("media/images/sm_article_w.png")
+        tl = sf.Image.from_file("media/images/tl_article_w.png")
 
         for a in self.articles:
             if a.size == "tl":
