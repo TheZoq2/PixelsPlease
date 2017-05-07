@@ -5,6 +5,7 @@ import image_handler
 from models import Article, Page, Day
 import generator
 from state import State
+import random
 
 resolution = (1024, 768)
 
@@ -117,7 +118,7 @@ def main():
                         end_censor(state, i)
                         working_in_page = False
 
-        end_of_day(state)
+        end_of_day(state, window)
 
 def end_censor(state, i):
     per_people, per_goverment = image_handler.compare_images(state.map.texture.to_image(), state.censor.texture.to_image())
@@ -127,15 +128,98 @@ def end_censor(state, i):
     print("PEOPLE SCORE: "+str(per_people)) # debug
     print("GOV SCORE: "+str(per_goverment)) # debug
 
-def end_of_day(state):
+def end_of_day(state, window):
     people, gov = state.day.get_score()
     state.new_score(people, gov)
     state.new_state()
+
     print("End of day!") # debug
     print("PEOPLE: "+str(state.people_score)+" GOV: "+str(state.goverment_score)) # debug
     print("STATES: People: "+state.people_state+" Gov: "+state.goverment_state) # debug
 
-    #TODO Show consequences and kill player if needed
+    # Select a random amount of events to trigger
+    event_amount = random.randint(1, 5)
 
+    for i in range(0, event_amount):
+        result = generator.random_event(state.world_state)
+        if result:
+            print(result)
+
+    #TODO Show states
+
+    end_day_texture = sf.Texture.from_file("media/images/end_day.png")
+    end_day_sprite = sf.Sprite(end_day_texture)
+
+
+    sleep_button_texture = sf.Texture.from_file("media/images/continue_button.png") # temporal
+    sleep_button_sprite = sf.Sprite(sleep_button_texture)
+    sleep_button_size = (100, 50)
+    sleep_button_position = (resolution[0] - sleep_button_size[0] - 10, \
+                                resolution[1] - sleep_button_size[1] - 10)
+    sleep_button_sprite.position = (sleep_button_position[0], sleep_button_position[1])
+
+    people_bar = progress_bar("People", state.people_score, 250, 85)
+    people_bar_sprite = sf.Sprite(people_bar.texture)
+    goverment_bar = progress_bar("Government", state.goverment_score, 580, 85)
+    goverment_bar_sprite = sf.Sprite(goverment_bar.texture)
+
+    while True:
+        window.draw(end_day_sprite)
+        window.draw(sleep_button_sprite)
+        window.draw(goverment_bar_sprite)
+        window.draw(people_bar_sprite)
+        window.display()
+
+        for event in window.events:
+            if type(event) is sf.KeyEvent:
+                if event.pressed and event.code == sf.Keyboard.X:
+                    window.close()
+                    exit()
+                if event.pressed and event.code == sf.Keyboard.RETURN:
+                    music.stop()
+                    return
+
+            if type(event) is sf.MouseButtonEvent:
+                if event.pressed and event.button == sf.Mouse.LEFT:
+                    mouse_position = sf.Mouse.get_position(window)
+
+                    if mouse_position.x >= sleep_button_position[0] and \
+                       mouse_position.x <= sleep_button_position[0] + sleep_button_size[0] and \
+                       mouse_position.y >= sleep_button_position[1] and \
+                       mouse_position.y <= sleep_button_position[1] + sleep_button_size[1]:
+                        music.stop()
+                        return
+
+
+def progress_bar(name, progress, posx, posy):
+    base = sf.RenderTexture(resolution[0], resolution[1])
+    base.clear(sf.Color.TRANSPARENT)
+
+    font = sf.Font.from_file("media/fonts/Pixelated-Regular.ttf")
+    title = sf.Text(name)
+    title.position = (posx-5, posy)
+    title.font = font
+    title.character_size = 20
+    title.style = sf.Text.REGULAR
+    title.color = sf.Color.WHITE
+
+    red_size = (progress * 370) / 100
+    black_size = 370 - red_size
+
+    black = sf.RectangleShape((80, black_size))
+    black.position = posx, posy+30
+    black.fill_color = sf.Color.BLACK
+
+    red = sf.RectangleShape((80, red_size))
+    red.position = posx, black.position.x+black_size
+    red.fill_color = sf.Color.RED
+
+    base.draw(black)
+    base.draw(red)
+    base.draw(title)
+
+    base.display()
+
+    return base
 
 main()
