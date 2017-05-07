@@ -1,24 +1,25 @@
 from sfml import sf
 import draw
 
-def check_event(window, event, censor_texture):
+def check_event(window, event, state):
     mouse_position = sf.Mouse.get_position(window)
 
     if type(event) is sf.MouseMoveEvent:
         if sf.Mouse.is_button_pressed(sf.Mouse.LEFT):
             mouse_position = sf.Mouse.get_position(window)
-            draw.censor(censor_texture, mouse_position)
+            draw.censor(state.censor, mouse_position)
 
         elif sf.Mouse.is_button_pressed(sf.Mouse.RIGHT):
             mouse_position = sf.Mouse.get_position(window)
-            draw.uncensor(censor_texture, mouse_position)
+            draw.uncensor(state.censor, mouse_position)
+
 
     if type(event) is sf.MouseButtonEvent:
         if event.pressed and event.button == sf.Mouse.LEFT:
-            draw.censor(censor_texture, mouse_position)
+            draw.censor(state.censor, mouse_position)
 
         if event.pressed and event.button == sf.Mouse.RIGHT:
-            draw.uncensor(censor_texture, mouse_position)
+            draw.uncensor(state.censor, mouse_position)
 
         if event.released and event.button == sf.Mouse.LEFT:
             pass
@@ -37,6 +38,16 @@ def check_event(window, event, censor_texture):
         if event.pressed and event.code == sf.Keyboard.RETURN:
             return "END"
 
+        if event.pressed and event.code == sf.Keyboard.P:
+            if state.music_silenced:
+                state.work_music.volume = 100
+                state.score_music.volume = 100
+                state.music_silenced = False
+
+            elif not state.music_silenced:
+                state.work_music.volume = 0
+                state.score_music.volume = 0
+                state.music_silenced = True
 
     if type(event) is sf.CloseEvent:
         window.close()

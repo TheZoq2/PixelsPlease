@@ -64,15 +64,10 @@ def main():
 
     clock_font = sf.Font.from_file("media/fonts/Pixelated-Regular.ttf")
 
-    work_music = sf.Music.from_file("media/music/PixelsPleaseCalm.ogg")
-    score_music = sf.Music.from_file("media/music/PixelsPleaseTitle.ogg")
 
-    work_music.loop = True
-    score_music.loop = True
+    title_screen(window, state.score_music)
 
-    title_screen(window, score_music)
-
-    work_music.play()
+    state.work_music.play()
 
     while not state.game_over:
 
@@ -117,7 +112,7 @@ def main():
                 window.display()
 
                 for event in window.events:
-                    rt = event_handler.check_event(window, event, state.censor)
+                    rt = event_handler.check_event(window, event, state)
                     if rt == "END":
                         end_censor(state, i)
                         working_in_page = False
