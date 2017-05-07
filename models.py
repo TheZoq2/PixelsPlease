@@ -1,4 +1,5 @@
 from sfml import sf
+import copy
 
 resolution = (1024, 768)
 
@@ -12,18 +13,31 @@ class Article():
 
     def get_lined_text(self):
         if self.size == "tl":
-            count = 3
+            count = 12
         elif self.size == "bg":
-            count = 5
+            count = 20
         else: # sm
-            count = 7
+            count = 20
 
         rt = ""
 
-        for i, word in enumerate(self.text.split(" ")):
-            rt += word+" "
-            if (i+1) % count == 0:
+        chars = copy.deepcopy(self.text)
+        last_space = None
+
+        words = chars.split(" ")
+
+        current_len = 0
+        for word in words:
+            current_len += len(word)
+
+            if current_len > count:
                 rt += "\n"
+                current_len = 0
+            else:
+                rt += " "
+
+
+            rt += word
 
         return rt
 

@@ -138,10 +138,20 @@ def diversify_headline(headline_function):
 
 HEADLINE_TEMPLATES = [
         diversify_headline(h_action),
+        diversify_headline(h_action),
+        diversify_headline(h_action),
+        diversify_headline(h_action),
+        diversify_headline(h_action),
+        diversify_headline(h_action),
+        diversify_headline(h_election_good),
         diversify_headline(h_election_good),
         diversify_headline(h_killing),
         diversify_headline(h_affair),
-        h_clickbait
+        diversify_headline(h_affair),
+        diversify_headline(h_affair),
+        h_clickbait,
+        h_clickbait,
+        h_clickbait,
     ]
 
 class WorldState():
