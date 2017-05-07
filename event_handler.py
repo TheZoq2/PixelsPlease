@@ -28,7 +28,6 @@ def check_event(window, event, state, current_page):
             pass
 
     if type(event) is sf.ResizeEvent:
-        print("Fuck")
         window.setView(sf.View(sf.FloatRect(0, 0, event.size.width, event.size.height)));
 
     if type(event) is sf.KeyEvent:

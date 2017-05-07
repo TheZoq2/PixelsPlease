@@ -12,6 +12,7 @@ class State():
         self.people_score = 50
         self.salary = 50 # ??
         self.day = None
+        self.is_viewing_notes = False
 
         self.maps = []
         self.papers = []
@@ -27,6 +28,8 @@ class State():
         self.work_music.loop = True
         self.score_music.loop = True
         self.music_silenced = False
+
+        self.note_list_sprite = None
 
     def init_page(self):
         articles = []

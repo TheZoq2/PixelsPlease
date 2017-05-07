@@ -75,6 +75,9 @@ def main():
     prev_button_position = (10, resolution[1] - button_size[1] - 10)
     prev_button_sprite.position = (prev_button_position[0], prev_button_position[1])
 
+    note_list = sf.Texture.from_file("media/images/page_notebook.png")
+    state.note_list_sprite = sf.Sprite(note_list)
+
     working = True
 
     while not state.game_over:

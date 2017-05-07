@@ -20,6 +20,13 @@ class Entity:
         self.name = name
         self.standing = standing
 
+    def get_standing_text(self):
+        return {
+                E_PRO_GOV: "{} should be protected from slander",
+                E_NEUTRAL: "{} does not need to be protected from slander",
+                E_ANTI_GOV: "Positive news about {} should be censored",
+            }[self.standing].format(self.name)
+
 ENTITIES = [
         Entity("General Valdimir", E_PRO_GOV),
         Entity("Emperor Josef", E_PRO_GOV),
@@ -32,7 +39,7 @@ ENTITIES = [
 
         Entity("Justin Bieber", E_NEUTRAL),
         Entity("Charlie Sheen", E_NEUTRAL),
-        Entity("Former former president Obama", E_NEUTRAL),
+        Entity("former president Obama", E_NEUTRAL),
         Entity("Hugh Hefner", E_NEUTRAL),
         Entity("Stefan Löfven", E_NEUTRAL),
         Entity("Göran Persson", E_NEUTRAL),
@@ -52,6 +59,12 @@ class Action:
         self.change_text = change_text
         self.coolness = coolness
 
+    def get_status_text(self):
+        if self.coolness == A_COOL:
+            return "{} is considered cool".format(self.change_text)
+        else:
+            return "{} is considered uncool".format(self.change_text)
+
 
 ACTIONS = [
             Action("{} has been seen wearing an ugly hat", "wearing ugly hats", A_UNCOOL),
@@ -63,7 +76,8 @@ ACTIONS = [
             Action("{} has donated a large sum to charity", "donating money", A_COOL),
             Action("{} has saved the life of {}".format("{}", random_entity_name()),
                 "saving people's lives", A_COOL),
-            Action("Nudes of {} have been leaked", "having your nudes leaked", A_UNCOOL)
+            Action("Nudes of {} have been leaked", "having your nudes leaked", A_UNCOOL),
+            Action("{} has had their private emails leaked", "having your emails leaked", A_UNCOOL),
         ]
 
 
@@ -174,6 +188,25 @@ class WorldState():
         self.actions = copy.deepcopy(ACTIONS)
         self.clickbait_state = C_NEUTRAL
 
+    def get_state_text(self):
+        result = "People: \n"
+
+        for e in self.entities:
+            result += e.get_standing_text() + "\n"
+
+        result += "====================\n"
+        result += "Actions: \n"
+
+        for a in self.actions:
+            result += a.get_status_text() + "\n"
+
+        result += "====================\n"
+
+        result += "Clickbait is: " + "legal" if self.clickbait_state == C_NEUTRAL else "illegal"
+
+        return result
+
+
 
 
 def generate_headline(world_state):
@@ -235,3 +268,5 @@ if __name__ == "__main__":
     print(generate_headline(world_state))
     print(ev_opinion_change(world_state))
     print(ev_coolness_change(world_state))
+
+    print(world_state.get_state_text())
