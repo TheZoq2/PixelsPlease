@@ -24,7 +24,7 @@ ENTITIES = [
         Entity("General Valdimir", E_PRO_GOV),
         Entity("Emperor Josef", E_PRO_GOV),
         Entity("KGB leader Alexandr Blinov", E_PRO_GOV),
-        Entity("Peresident Anatoli", E_PRO_GOV),
+        Entity("President Anatoli", E_PRO_GOV),
         Entity("Empress Swetlana", E_PRO_GOV),
 
         Entity("Rebel general Andrei", E_ANTI_GOV),
@@ -36,6 +36,7 @@ ENTITIES = [
         Entity("Hugh Hefner", E_NEUTRAL),
         Entity("Stefan Löfven", E_NEUTRAL),
         Entity("Göran Persson", E_NEUTRAL),
+        Entity("Miley Cyrus", E_NEUTRAL),
     ]
 
 def random_entity_name():
@@ -118,6 +119,14 @@ def h_clickbait(world_state):
                             get_random_entity(world_state).name,
                             get_random_entity(world_state).name
                         ),
+                ]),
+            world_state.clickbait_state
+        )
+
+
+def h_generic(world_state):
+    return (
+            pick_one([
                     "Mikhail finally got out of harbour",
                     "{} almost run over by angry australian".format(get_random_entity(world_state).name),
                     "Danish person attempted to insult {}".format(get_random_entity(world_state).name),
@@ -154,17 +163,15 @@ HEADLINE_TEMPLATES = [
         diversify_headline(h_election_good),
         diversify_headline(h_killing),
         diversify_headline(h_affair),
-        diversify_headline(h_affair),
-        diversify_headline(h_affair),
         h_clickbait,
-        h_clickbait,
-        h_clickbait,
+        h_generic
     ]
 
 class WorldState():
     def __init__(self):
         self.entities = copy.deepcopy(ENTITIES)
         self.actions = copy.deepcopy(ACTIONS)
+        self.clickbait_state = C_NEUTRAL
 
 
 
@@ -199,12 +206,23 @@ def ev_coolness_change(world_state):
     target.coolness = new_coolness
     return "{} is now considered {}".format(target.change_text, "cool" if new_coolness == A_COOL else "uncool")
 
+def ev_clickbait_opinion_change(world_state):
+    if world_state.clickbait_state == C_NEUTRAL:
+        world_state.clickbait_state = C_BAD
+        return "The government has announced that publishing clickbait is now illegal"
+    else:
+        world_state.clickbait_state = C_NEUTRAL
+        return "The government has removed the ban on clickbait"
+
 
 def random_event(world_state):
-    pick_one([
+    return pick_one([
             ev_opinion_change,
-            ev_coolness_change
-        ])
+            ev_opinion_change,
+            ev_coolness_change,
+            ev_coolness_change,
+            ev_clickbait_opinion_change,
+        ])(world_state)
 
 
 if __name__ == "__main__":

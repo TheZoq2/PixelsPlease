@@ -5,6 +5,7 @@ import image_handler
 from models import Article, Page, Day
 import generator
 from state import State
+import random
 
 resolution = (1024, 768)
 
@@ -139,6 +140,14 @@ def end_of_day(state):
     print("End of day!") # debug
     print("PEOPLE: "+str(state.people_score)+" GOV: "+str(state.goverment_score)) # debug
     print("STATES: People: "+state.people_state+" Gov: "+state.goverment_state) # debug
+
+    # Select a random amount of events to trigger
+    event_amount = random.randint(1, 5)
+
+    for i in range(0, event_amount):
+        result = generator.random_event(state.world_state)
+        if result:
+            print(result)
 
     #TODO Show consequences and kill player if needed
 
