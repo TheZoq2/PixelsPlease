@@ -213,6 +213,10 @@ def end_of_day(state, window):
     state.new_score(people, gov)
     state.new_state()
 
+    if state.people_state == "revolution" or state.goverment_state == "jail":
+        game_over(state, window)
+        return
+
     print("End of day!") # debug
     print("PEOPLE: "+str(state.people_score)+" GOV: "+str(state.goverment_score)) # debug
     print("STATES: People: "+state.people_state+" Gov: "+state.goverment_state) # debug
@@ -344,4 +348,47 @@ def show_loading_screen(window):
     window.draw(sf.Sprite(base.texture))
     window.display()
 
-main()
+def game_over(state, window):
+    state.game_over = True
+    if state.people_state == "revolution":
+        reason_string = state.get_people_state()
+    else:
+        reason_string = state.get_government_state()
+
+    base = sf.RenderTexture(resolution[0], resolution[1])
+    base.clear(sf.Color.BLACK)
+
+    font = sf.Font.from_file("media/fonts/Pixelated-Regular.ttf")
+    title = sf.Text("GAME OVER")
+    title.font = font
+    title.character_size = 70
+    title.style = sf.Text.REGULAR
+    title.color = sf.Color.RED
+    title.position = (resolution[0]/2-250, 100)
+
+    reason = sf.Text(reason_string)
+    reason.font = font
+    reason.character_size = 35
+    reason.style = sf.Text.REGULAR
+    reason.color = sf.Color.WHITE
+    reason.position = (resolution[0]/2-300, resolution[1]/2-60)
+
+    base.draw(title)
+    base.draw(reason)
+    base.display()
+
+    while True:
+        window.draw(sf.Sprite(base.texture))
+        window.display()
+
+        for event in window.events:
+            if type(event) is sf.KeyEvent:
+                if event.pressed and event.code == sf.Keyboard.X:
+                    window.close()
+                    exit()
+                if event.pressed and event.code == sf.Keyboard.RETURN:
+                    state.score_music.stop()
+                    return
+
+while True:
+    main()

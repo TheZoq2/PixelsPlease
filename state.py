@@ -107,7 +107,7 @@ class State():
                 "The rebels may use the chaos to start a revolution"
             ])
         else:
-            return "There was a revolution" # revolution, game over
+            return "There was a revolution \n the rebels killed you." # revolution, game over
 
     def get_government_state(self):
         if self.goverment_state == "+20":
@@ -121,7 +121,7 @@ class State():
         elif self.goverment_state == "-20":
             return "The government is starting to think that you are a rebel"
         else: # jail -> game over
-            return "You are in jail accused of acting against the government"
+            return "You are in jail accused of \n acting against the government"
 
     def new_state(self):
         self.new_people_state()
@@ -166,7 +166,7 @@ class State():
 
     def new_people_state(self):
         if self.people_state == "empowered":
-            if self.people_score > 80:
+            if self.people_score > 90:
                 self.people_state = "revolution"
             elif self.people_score < 30:
                 self.people_state = "demostrations"
