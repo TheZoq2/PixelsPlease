@@ -111,7 +111,7 @@ def h_clickbait(world_state):
                             get_random_entity(world_state).name,
                             get_random_entity(world_state).name
                         ),
-                    "Michael finally got out of harbour",
+                    "Mikhail finally got out of harbour",
                     "{} almost run over by angry australian".format(get_random_entity(world_state).name),
                     "Danish person attempted to insult {}".format(get_random_entity(world_state).name),
                 ]),
