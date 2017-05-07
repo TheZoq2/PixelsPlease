@@ -211,7 +211,7 @@ def progress_bar(name, progress, posx, posy):
     black.fill_color = sf.Color.BLACK
 
     red = sf.RectangleShape((80, red_size))
-    red.position = posx, black.position[1]+black_size
+    red.position = posx, black.position.x+black_size
     red.fill_color = sf.Color.RED
 
     base.draw(black)
