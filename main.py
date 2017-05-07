@@ -15,9 +15,31 @@ class GameState:
         self.page = None
         self.paper = None
 
+def title_screen(window, music):
+    title_texture = sf.Texture.from_file("media/images/Letter.png");
+    title_sprite = sf.Sprite(title_texture);
+
+    music.play()
+
+    while True:
+        window.draw(title_sprite);
+        window.display()
+
+        for event in window.events:
+            if type(event) is sf.KeyEvent:
+                if event.pressed and event.code == sf.Keyboard.X:
+                    window.close()
+                    exit()
+                if event.pressed and event.code == sf.Keyboard.RETURN:
+                    music.stop()
+                    return
+
 def main():
-    window = sf.RenderWindow(sf.VideoMode(resolution[0], resolution[1]), "Pixels please", sf.Style.CLOSE)
+    window = sf.RenderWindow(sf.VideoMode(resolution[0], resolution[1]), "Pixels please")
     state = GameState()
+
+    world_state = generator.WorldState()
+
     #window.clear(sf.Color.BLUE)
 
     state.censor_texture = sf.RenderTexture(resolution[0], resolution[1])
@@ -31,10 +53,13 @@ def main():
     work_music.loop = True
     score_music.loop = True
 
+    title_screen(window, score_music)
+
     work_music.play()
 
     #paper = sf.Texture.from_file('media/images/pixels_please_paper_1.png')
-    state.day = generate_day()
+    state.day = generate_day(world_state)
+
     for i in range(len(state.day.pages)):
         working_in_page = True
         state.map = state.day.pages[i].get_map_texture()
@@ -46,13 +71,15 @@ def main():
         time_limit = sf.seconds(30)
         current_time = sf.Clock()
 
+        time_limit = sf.seconds(30)
+        current_time = sf.Clock()
 
         while working_in_page:
             #time.sleep(0.001) # If you remove this your computer might freze
 
             state.censor_texture.display()
             window.draw(sf.Sprite(state.paper))
-            #window.draw(sf.Sprite(state.map.texture)) # debug
+            window.draw(sf.Sprite(state.map.texture)) # debug
             window.draw(state.censor_texture_sprite, sf.RenderStates(shader=shader))
 
             clock_text = sf.Text("Time left: " + str(int(time_limit.seconds - current_time.elapsed_time.seconds)))
@@ -85,28 +112,33 @@ def end_censor(state, i):
     per_people, per_goverment = image_handler.compare_images(state.map.texture.to_image(), state.censor_texture.texture.to_image())
     state.day.pages[i].people_score = per_people
     state.day.pages[i].goverment_score = per_goverment
+
+    per_people, per_goverment = image_handler.compare_images(
+            state.map.texture.to_image(),
+            state.censor_texture.texture.to_image()
+        )
     # save the score
     # next page
     print("PEOPLE SCORE: "+str(per_people)) # debug
     print("GOV SCORE: "+str(per_goverment)) # debug
 
-    #generate a new game state
+    
 
-def generate_day():
+def generate_day(world_state):
     pages = []
     for i in range(3): # 3 articles?
-        pages.append(generate_page())
+        pages.append(generate_page(world_state))
 
     return Day(pages)
 
 
-def generate_page():
+def generate_page(world_state):
     articles = []
 
-    articles.append(Article(260, 140, "bg", generator.generate_headline()[0], generator.generate_headline()[1]))
-    articles.append(Article(260, 330, "tl", generator.generate_headline()[0], generator.generate_headline()[1]))
-    articles.append(Article(550, 330, "sm", generator.generate_headline()[0], generator.generate_headline()[1]))
-    articles.append(Article(550, 450, "sm", generator.generate_headline()[0], generator.generate_headline()[1]))
+    articles.append(Article(260, 140, "bg", generator.generate_headline(world_state)))
+    articles.append(Article(260, 330, "tl", generator.generate_headline(world_state)))
+    articles.append(Article(550, 330, "sm", generator.generate_headline(world_state)))
+    articles.append(Article(550, 450, "sm", generator.generate_headline(world_state)))
 
     return Page(articles)
 

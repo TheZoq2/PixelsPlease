@@ -3,12 +3,12 @@ from sfml import sf
 resolution = (1024, 768)
 
 class Article():
-    def __init__(self, x, y, size, text="", type=0):
+    def __init__(self, x, y, size, headline):
         self.x = x
         self.y = y
         self.size = size # tl, bg or sm
-        self.text = text
-        self.type = type
+        self.text = headline[0]
+        self.type = headline[1]
 
     def get_lined_text(self):
         if self.size == "tl":
@@ -50,21 +50,31 @@ class Article():
 class Page():
     def __init__(self, articles):
         self.articles = articles
+        self.people_score = None
+        self.goverment_score = None
 
     def get_map_texture(self):
         base = sf.RenderTexture(resolution[0], resolution[1])
         base.clear(sf.Color.TRANSPARENT)
         for a in self.articles:
-            bounds = a.get_text().global_bounds
-            rect = sf.RectangleShape((bounds.size[0]-5, bounds.size[1]-5))
-            rect.position = bounds.position[0], (bounds.position[1] - (bounds.position[1] - resolution[1]/2)*2)-bounds.size[1]+5 # it works, don't ask how
+            #bounds = a.get_text().global_bounds
+            #rect = sf.RectangleShape((bounds.size[0]-5, bounds.size[1]-5))
+            #rect.position = bounds.position[0], (bounds.position[1] - (bounds.position[1] - resolution[1]/2)*2)-bounds.size[1]+5 # it works, don't ask how
+            #if a.type == -1:
+            #    rect.fill_color = sf.Color.BLACK
+            #else: #0
+            #    rect.fill_color = sf.Color.RED
+
+            #base.draw(rect)
+            text_object = a.get_text()
             if a.type == -1:
-                rect.fill_color = sf.Color.BLACK
+                text_object.color = sf.Color.BLACK
             else: #0
-                rect.fill_color = sf.Color.RED
+                text_object.color = sf.Color.RED
 
-            base.draw(rect)
+            base.draw(text_object)
 
+        base.display()
         return base
 
 
@@ -93,8 +103,8 @@ class Day():
         people = 0
         gov = 0
         for page in self.pages:
-            people += page.pScore
-            gov += page.gScore
+            people += page.people_score
+            gov += page.goverment_score
 
         people /= len(self.pages)
         gov /= len(self.pages)
